@@ -241,3 +241,14 @@ commands:
           type: "[]string"
           description: "Error conditions occurred. May contain overtemp, overpower, overvoltage, undervoltage, (shown if at least one error is present)"
           omitempty: true
+    # Switch.Toggle - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Switch#switchtoggle
+    - category: Switch  
+      name: Toggle
+      request: 
+        id:
+          type: int
+          description: Id of the Switch component instance.
+      response:
+        was_on: 
+          type: bool
+          description: True if the switch was on before the method was executed, false otherwise.
