@@ -6,8 +6,6 @@ import (
 	"github.com/FrangipaneTeam/go-shelly-sdk/shelly"
 )
 
-//go:generate go run template/template.go
-
 func main() {
 	s, err := shelly.New("192.168.0.1")
 	if err != nil {

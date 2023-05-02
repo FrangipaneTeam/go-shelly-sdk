@@ -8,4 +8,4 @@ import (
 	_ "gopkg.in/yaml.v3"
 )
 
-//go:generate go run template/template.go
+//go:generate go run template/main.go

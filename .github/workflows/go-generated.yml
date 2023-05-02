@@ -23,5 +23,5 @@ jobs:
         with:
           add_options: '--force'
           commit_message: 'ci(generate): changes by go generate'
-          file_pattern: 'generated_*.go'
+          file_pattern: 'shelly/generated_*.go'
           skip_dirty_check: true
