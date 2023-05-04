@@ -28,3 +28,17 @@ type SwitchClient struct {
 func (c *Client) Switch() *SwitchClient {
 	return &SwitchClient{client: c}
 }
+
+/*
+ > Client Light
+*/
+
+// Light is the client for the Light.
+type LightClient struct {
+	client *Client
+}
+
+// Light returns a client for the Light.
+func (c *Client) Light() *LightClient {
+	return &LightClient{client: c}
+}
