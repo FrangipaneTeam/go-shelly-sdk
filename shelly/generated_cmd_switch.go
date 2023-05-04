@@ -355,3 +355,45 @@ func (c SwitchClient) Toggle(args SwitchToggleRequest) (resp *SwitchToggleRespon
 func (r *SwitchToggleResponse) GetWasOn() bool {
 	return r.WasOn
 }
+
+/*
+ > Command Switch.Set
+ > This method sets the output of the Switch component to on or off.
+*/
+
+// SwitchSetRequest is the request of Set.
+type SwitchSetRequest struct {
+	Id          string `json:"id"`                     // Id of the Switch component instance.
+	On          bool   `json:"on"`                     // True for switch on, false otherwise.
+	ToggleAfter int    `json:"toggle_after,omitempty"` // Optional. Number, seconds to wait before toggling the switch back to its previous state.
+}
+
+// SwitchSetResponse is the response of Set.
+type SwitchSetResponse struct {
+	WasOn bool `json:"was_on"` // True if the switch was on before the method was executed, false otherwise.
+}
+
+// readResponse reads the response into the given interface.
+func (r *SwitchSetResponse) readResponse(reader *responseReader) error { //nolint:dupl
+	if reader.Response == nil {
+		return ErrInvalidResponse
+	}
+	return reader.Read(r)
+}
+
+// Set This method sets the output of the Switch component to on or off.
+func (c SwitchClient) Set(args SwitchSetRequest) (resp *SwitchSetResponse, err error) { //nolint:dupl
+	reader := NewResponseReader()
+
+	if err = c.client.rpc.Call("Switch.Set", args, &reader.Response); err != nil {
+		return
+	}
+
+	resp = &SwitchSetResponse{}
+	return resp, resp.readResponse(reader)
+}
+
+// Getwas_on returns the was_on value.
+func (r *SwitchSetResponse) GetWasOn() bool {
+	return r.WasOn
+}
