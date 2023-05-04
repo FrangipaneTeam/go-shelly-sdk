@@ -252,3 +252,22 @@ commands:
         was_on: 
           type: bool
           description: True if the switch was on before the method was executed, false otherwise.
+    # Switch.Set - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Switch#switchset
+    - category: Switch
+      name: Set
+      description: This method sets the output of the Switch component to on or off.
+      request:
+        id:
+          type: string
+          description: Id of the Switch component instance.
+        on:
+          type: bool
+          description: True for switch on, false otherwise.
+        toggle_after:
+          type: int
+          description: "Number, seconds to wait before toggling the switch back to its previous state."
+          omitempty: true
+      response:
+        was_on:
+          type: bool
+          description: True if the switch was on before the method was executed, false otherwise.
