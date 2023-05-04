@@ -271,3 +271,157 @@ commands:
         was_on:
           type: bool
           description: True if the switch was on before the method was executed, false otherwise.
+    #
+    # > End of Switch
+    #
+
+    #
+    # > Start of Light
+    #
+    ## Light.GetConfig - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Light#lightgetconfig
+    - category: Light  
+      name: GetConfig
+      request: 
+        id:
+          type: string
+          description: Id of the Light component instance.
+      response:
+        id: 
+          type: string
+          description: Id of the Light component instance.
+        name:
+          type: string
+          description: Name of the light instance.
+          omitempty: true
+        initial_state:
+          type: string
+          description: "Output state to set on power_on. Range of values: off, on, restore_last"
+        auto_on:
+          type: bool
+          description: "True if the \"Automatic ON\" function is enabled, false otherwise"
+        auto_on_delay:
+          type: int
+          description: "Seconds to pass until the component is switched back on"
+        auto_off:
+          type: bool
+          description: "True if the \"Automatic OFF\" function is enabled, false otherwise"
+        auto_off_delay:
+          type: int
+          description: "Seconds to pass until the component is switched back off"
+        default.brightness:
+          type: int
+          description: "Brightness level (in percent) after power on"
+          omitempty: true
+        night_mode.enable:
+          type: bool
+          description: "Enable or disable night mode"
+        night_mode.brightness:
+          type: int
+          description: "Brightness level limit when night mode is active"
+        night_mode.active_between:
+          type: "[]string"
+          description: "Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros."
+    ## Light.GetStatus - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Light#lightgetstatus  
+    - category: Light  
+      name: GetStatus
+      request: 
+        id:
+          type: string
+          description: Id of the Light component instance.
+      response:
+        id: 
+          type: string
+          description: Id of the Light component instance.
+        source:
+          type: string
+          description: "Source of the last command, for example: init, WS_in, http, ..."
+        output:
+          type: bool
+          description: "true if the output channel is currently on, false otherwise"
+        brightness:
+          type: int
+          description: "Brightness level (in percent)"
+        timer_started_at:
+          type: int
+          description: "Unix timestamp, start time of the timer (in UTC) (shown if the timer is triggered)"
+          omitempty: true
+        timer_duration:
+          type: int
+          description: "Duration of the timer in seconds (shown if the timer is triggered)"
+          omitempty: true
+    # Light.SetConfig - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Light#lightsetconfig
+    - category: Light
+      name: SetConfig
+      description: This method sets the configuration of the Light component.
+      request:
+        id:
+          type: string
+          description: Id of the Light component instance.
+        config:
+          type: object
+          description: Configuration that the method takes.
+          omitempty: true
+          items: 
+            id: 
+              type: string
+              description: Id of the Light component instance.
+            name:
+              type: string
+              description: Name of the light instance.
+              omitempty: true
+            initial_state:
+              type: string
+              description: "Output state to set on power_on. Range of values: off, on, restore_last"
+            auto_on:
+              type: bool
+              description: "True if the \"Automatic ON\" function is enabled, false otherwise"
+            auto_on_delay:
+              type: int
+              description: "Seconds to pass until the component is switched back on"
+            auto_off:
+              type: bool
+              description: "True if the \"Automatic OFF\" function is enabled, false otherwise"
+            auto_off_delay:
+              type: int
+              description: "Seconds to pass until the component is switched back off"
+            default.brightness:
+              type: int
+              description: "Brightness level (in percent) after power on"
+              omitempty: true
+            night_mode.enable:
+              type: bool
+              description: "Enable or disable night mode"
+            night_mode.brightness:
+              type: int
+              description: "Brightness level limit when night mode is active"
+            night_mode.active_between:
+              type: "[]string"
+              description: "Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros."
+    ## Light.Set - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Light#lightset
+    - category: Light
+      name: Set
+      description: This method sets the output of the Light component to on or off. At least one of the on and brightness parameters is required.
+      request:
+        id:
+          type: string
+          description: Id of the Light component instance.
+        on:
+          type: bool
+          description: True for light on, false otherwise.
+          omitempty: true
+        brightness:
+          type: int
+          description: "Brightness level (in percent)"
+          omitempty: true
+        toggle_after:
+          type: int
+          description: "Optional flip-back timer in seconds."
+          omitempty: true
+    ## Light.Toggle - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Light#lighttoggle
+    - category: Light
+      name: Toggle
+      description: This method toggles the output of the Light component.
+      request:
+        id:
+          type: string
+          description: Id of the Light component instance.
