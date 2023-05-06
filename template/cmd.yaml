@@ -728,3 +728,43 @@ commands:
         rel:
           type: int
           description: "Required and mutually exclusive (at least one of them pos/rel be provided, but not both at the same time). rel represents relative move in %, allowed range [-100..100]"
+    #
+    # End of Cover
+    #
+    # 
+    # DevicePower
+    #
+    ## DevicePower.GetStatus - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/DevicePower#devicepowergetstatus
+    - category: DevicePower
+      name: GetStatus
+      description: Get DevicePower status
+      request: 
+        id:
+          type: string
+          description: "Id of the DevicePower component instance"
+      response:
+        id:
+          type: int
+          description: "Id of the DevicePower component instance"
+        battery:
+          type: object
+          description: "Information about the battery charge"
+          items:
+            v:
+              type: int
+              description: "Battery voltage in Volts (null if valid value could not be obtained)"
+              omitempty: true
+            percent:
+              type: int
+              description: "Battery charge level in % (null if valid value could not be obtained)"
+              omitempty: true
+        external:
+          type: object
+          description: "Information about the external power source (only available if external power source is supported)"
+          items:
+            present:
+              type: bool
+              description: "Whether external power source is connected"
+        errors:
+          type: "[]string"
+          description: "Whether external power source is connected"

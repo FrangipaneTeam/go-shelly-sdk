@@ -56,3 +56,17 @@ type CoverClient struct {
 func (c *Client) Cover() *CoverClient {
 	return &CoverClient{client: c}
 }
+
+/*
+ > Client DevicePower
+*/
+
+// DevicePower is the client for the DevicePower.
+type DevicePowerClient struct {
+	client *Client
+}
+
+// DevicePower returns a client for the DevicePower.
+func (c *Client) DevicePower() *DevicePowerClient {
+	return &DevicePowerClient{client: c}
+}
