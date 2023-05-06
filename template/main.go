@@ -45,7 +45,7 @@ type templateCommandInfosArgsResponse struct {
 	Type        string `yaml:"type"`
 	OmitEmpty   bool   `yaml:"omitempty"`
 	Description string `yaml:"description"`
-	Items       map[string]templateCommandInfosArgsRequest
+	Items       map[string]templateCommandInfosArgsResponse
 }
 
 //go:embed cmd.go.tmpl
@@ -90,12 +90,22 @@ func main() {
 		for k, v := range v.Request {
 			if v.Type == "object" {
 				extraStructsRequest[k] = v
+				for k2, v2 := range v.Items {
+					if v2.Type == "object" {
+						extraStructsRequest[strcase.ToCamel(fmt.Sprintf("%s_%s", k, k2))] = v2
+					}
+				}
 			}
 		}
 
 		for k, v := range v.Response {
 			if v.Type == "object" {
 				extraStructsResponse[k] = v
+				for k2, v2 := range v.Items {
+					if v2.Type == "object" {
+						extraStructsResponse[strcase.ToCamel(fmt.Sprintf("%s_%s", k, k2))] = v2
+					}
+				}
 			}
 		}
 

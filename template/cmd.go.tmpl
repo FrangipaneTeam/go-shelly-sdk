@@ -27,7 +27,11 @@ type {{ .Category }}{{ .Name }}Request struct {
 // {{ $category }}{{ $name }}Request{{ $k | ToCamel }} is the request of {{ $k }}.
 type {{ $category }}{{ $name }}Request{{ $k | ToCamel }} struct {
 	{{ range $k1, $v1 := $v.Items }}
+	{{- if eq $v1.Type "object" }}
+	{{ $k1 | ToCamel }} {{ $category }}{{ $name }}Request{{ $k | ToCamel }}{{ $k1 | ToCamel }} `json:"{{ $k1 | ToLower }}{{ if $v1.OmitEmpty }},omitempty{{ end }}"`{{ if $v1.Description }} // {{ if $v1.OmitEmpty }}Optional. {{end}}{{ $v1.Description }}{{ end }}
+	{{- else }}
 	{{ $k1 | ToCamel }} {{ $v1.Type }} `json:"{{ $k1 | ToLower }}{{ if $v1.OmitEmpty }},omitempty{{ end }}"`{{ if $v1.Description }} // {{ $v1.Description }}{{ end }}
+	{{- end }}
 	{{- end }}
 }
 {{ end }}
@@ -50,7 +54,11 @@ type {{ .Category }}{{ .Name }}Response struct {
 // {{ $category }}{{ $name }}Response{{ $k | ToCamel }} is the response of {{ $k }}.
 type {{ $category }}{{ $name }}Response{{ $k | ToCamel }} struct {
 	{{ range $k1, $v1 := $v.Items }}
+	{{- if eq $v1.Type "object" }}
+	{{ $k1 | ToCamel }} {{ $category }}{{ $name }}Response{{ $k | ToCamel }}{{ $k1 | ToCamel }} `json:"{{ $k1 | ToLower }}{{ if $v1.OmitEmpty }},omitempty{{ end }}"`{{ if $v1.Description }} // {{ if $v1.OmitEmpty }}Optional. {{end}}{{ $v1.Description }}{{ end }}
+	{{- else }}
 	{{ $k1 | ToCamel }} {{ $v1.Type }} `json:"{{ $k1 | ToLower }}"`{{ if $v1.Description }} // {{ $v1.Description }}{{ end }}
+	{{- end }}
 	{{- end }}
 }
 {{ end }}
