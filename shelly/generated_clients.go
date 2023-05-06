@@ -42,3 +42,17 @@ type LightClient struct {
 func (c *Client) Light() *LightClient {
 	return &LightClient{client: c}
 }
+
+/*
+ > Client Cover
+*/
+
+// Cover is the client for the Cover.
+type CoverClient struct {
+	client *Client
+}
+
+// Cover returns a client for the Cover.
+func (c *Client) Cover() *CoverClient {
+	return &CoverClient{client: c}
+}
