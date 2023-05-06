@@ -115,7 +115,7 @@ commands:
               omitempty: true
             current_limit:
               type: int
-              description: "Number, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)"
+              description: "int, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)"
               omitempty: true
     ## Switch.GetConfig - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Switch#switchgetconfig
     - category: Switch  
@@ -170,7 +170,7 @@ commands:
           omitempty: true
         current_limit:
           type: int
-          description: "Number, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)"
+          description: "int, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)"
           omitempty: true
     ## Switch.GetStatus - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/Switch#switchgetstatus
     - category: Switch  
@@ -265,7 +265,7 @@ commands:
           description: True for switch on, false otherwise.
         toggle_after:
           type: int
-          description: "Number, seconds to wait before toggling the switch back to its previous state."
+          description: "int, seconds to wait before toggling the switch back to its previous state."
           omitempty: true
       response:
         was_on:
@@ -502,7 +502,7 @@ commands:
               description: "The recovery action which should be performed if the safety switch is engaged while moving in a monitored direction, one of: stop - Immediately stop Cover. reverse - Immediately stop Cover, then move in the opposite direction until a fully open or fully closed position is reached."
               omitempty: true
             power_thr:
-              type: number
+              type: int
               description: "Watts, power consumption above this threshold should be interpreted as objects obstructing Cover movement. This property is editable at any time, but note that during the cover calibration procedure (Cover.Calibrate), power_thr will be automatically set to the peak power consumption + 15%, overwriting the current value. The automatic setup of power_thr during calibration will only start tracking power values when the holdoff time (see below) has elapsed."
             holdoff:
               type: int
@@ -599,7 +599,7 @@ commands:
                   description: "The recovery action which should be performed if the safety switch is engaged while moving in a monitored direction, one of: stop - Immediately stop Cover. reverse - Immediately stop Cover, then move in the opposite direction until a fully open or fully closed position is reached."
                   omitempty: true
                 power_thr:
-                  type: number
+                  type: int
                   description: "Watts, power consumption above this threshold should be interpreted as objects obstructing Cover movement. This property is editable at any time, but note that during the cover calibration procedure (Cover.Calibrate), power_thr will be automatically set to the peak power consumption + 15%, overwriting the current value. The automatic setup of power_thr during calibration will only start tracking power values when the holdoff time (see below) has elapsed."
                 holdoff:
                   type: int
@@ -676,7 +676,7 @@ commands:
           type: int
           description: "Seconds, only present if Cover is actively moving in either open or close directions. Cover will automatically stop after the timeout expires"
         move_started_at:
-          type: number
+          type: int
           description: "Only present if Cover is actively moving in either open or close directions. Represents the time at which the movement has begun"
         pos_control:
           type: bool
