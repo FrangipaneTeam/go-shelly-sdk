@@ -42,7 +42,7 @@ type CoverGetConfigResponseObstructionDetection struct {
 	Direction string `json:"direction"` // The direction of motion for which safety switch should be monitored, one of open, close, both
 	Enable    bool   `json:"enable"`    // true when obstruction detection is enabled, false otherwise
 	Holdoff   int    `json:"holdoff"`   // Seconds, time to wait after Cover starts moving before obstruction detection is activated (to avoid false detections because of the initial power consumption spike).
-	PowerThr  number `json:"power_thr"` // Watts, power consumption above this threshold should be interpreted as objects obstructing Cover movement. This property is editable at any time, but note that during the cover calibration procedure (Cover.Calibrate), power_thr will be automatically set to the peak power consumption + 15%, overwriting the current value. The automatic setup of power_thr during calibration will only start tracking power values when the holdoff time (see below) has elapsed.
+	PowerThr  int    `json:"power_thr"` // Watts, power consumption above this threshold should be interpreted as objects obstructing Cover movement. This property is editable at any time, but note that during the cover calibration procedure (Cover.Calibrate), power_thr will be automatically set to the peak power consumption + 15%, overwriting the current value. The automatic setup of power_thr during calibration will only start tracking power values when the holdoff time (see below) has elapsed.
 }
 
 // CoverGetConfigResponseSafetySwitch is the response of safety_switch.
@@ -179,7 +179,7 @@ func (r *CoverGetConfigResponseObstructionDetection) GetHoldoff() int {
 }
 
 // Getpower_thr returns the power_thr value.
-func (r *CoverGetConfigResponseObstructionDetection) GetPowerThr() number {
+func (r *CoverGetConfigResponseObstructionDetection) GetPowerThr() int {
 	return r.PowerThr
 }
 
@@ -214,23 +214,46 @@ type CoverSetConfigRequest struct {
 	Id     string                      `json:"id"`     // The ID of the Cover instance to configure.
 }
 
+// CoverSetConfigRequestConfigMotor is the request of ConfigMotor.
+type CoverSetConfigRequestConfigMotor struct {
+	IdleConfirmPeriod int `json:"idle_confirm_period"` // Seconds, minimum period of time in idle state before state is confirmed.
+	IdlePowerThr      int `json:"idle_power_thr"`      // Watts, threshold below which the motor is considered stopped.
+}
+
+// CoverSetConfigRequestConfigObstructionDetection is the request of ConfigObstructionDetection.
+type CoverSetConfigRequestConfigObstructionDetection struct {
+	Action    string `json:"action,omitempty"` // The recovery action which should be performed if the safety switch is engaged while moving in a monitored direction, one of: stop - Immediately stop Cover. reverse - Immediately stop Cover, then move in the opposite direction until a fully open or fully closed position is reached.
+	Direction string `json:"direction"`        // The direction of motion for which safety switch should be monitored, one of open, close, both
+	Enable    bool   `json:"enable"`           // true when obstruction detection is enabled, false otherwise
+	Holdoff   int    `json:"holdoff"`          // Seconds, time to wait after Cover starts moving before obstruction detection is activated (to avoid false detections because of the initial power consumption spike).
+	PowerThr  int    `json:"power_thr"`        // Watts, power consumption above this threshold should be interpreted as objects obstructing Cover movement. This property is editable at any time, but note that during the cover calibration procedure (Cover.Calibrate), power_thr will be automatically set to the peak power consumption + 15%, overwriting the current value. The automatic setup of power_thr during calibration will only start tracking power values when the holdoff time (see below) has elapsed.
+}
+
+// CoverSetConfigRequestConfigSafetySwitch is the request of ConfigSafetySwitch.
+type CoverSetConfigRequestConfigSafetySwitch struct {
+	Action      string `json:"action,omitempty"`       // The recovery action which should be performed if the safety switch is engaged while moving in a monitored direction, one of: stop - Immediately stop Cover. reverse - Immediately stop Cover, then move in the opposite direction until a fully open or fully closed position is reached. pause - Immediately stop Cover, then either: wait for a command to move in an allowed direction (see below) or automatically continue movement in the same direction (i.e. the one that was interrupted) when the safety switch is disengaged
+	AllowedMove string `json:"allowed_move,omitempty"` // Allowed movement direction when the safety switch is engaged while moving in a monitored direction: null - null means Cover can't be moved in neither open nor close directions while the safety switch is engaged. reverse - the only other option is reverse, which means Cover can only be moved in the direction opposite to the one that was interrupted (for example, if the safety switch was hit while opening, Cover can only be commanded to close if the switch is not disengaged)
+	Direction   string `json:"direction"`              // The direction of motion for which safety switch should be monitored, one of open, close, both
+	Enable      bool   `json:"enable"`                 // true when safety switch is enabled, false otherwise
+}
+
 // CoverSetConfigRequestConfig is the request of config.
 type CoverSetConfigRequestConfig struct {
-	CurrentLimit         int    `json:"current_limit"`         // Amperes, limit that must be exceeded to trigger an overcurrent error.
-	Id                   string `json:"id"`                    // Id of the Cover component instance.
-	InMode               string `json:"in_mode,omitempty"`     // One of single, dual or detached, only present if there is at least one input associated with the Cover instance. Single - Cover operation in both open and close directions is controlled via a single input. In this mode, only input_0 is used to open/close/stop the Cover. It doesn't matter if input_0 has in_type=switch or in_type=button, the behavior is the same: each switch toggle or button press cycles between open/stop/close/stop/... In single mode, input_1 is free to be used as a safety switch (e.g. end-of-motion limit switch, emergency-stop, etc.). dual - Cover operation is controlled via two inputs, one for open and one for close. In this mode, input_0 is used to open the Cover, input_1 is used to close the Cover.The exact behavior depends on the in_type of the inputs: if in_type = switch: toggle the switch to ON to move in the associated direction; toggle the switch to OFF to stop, if in_type = button: press the button to move in the associated direction; press the button again to stop. detached - Cover operation via the input/inputs is prohibited.
-	InitialState         string `json:"initial_state"`         // Defines Cover target state on power-on, one of open (Cover will fully open), closed (Cover will fully close) or stopped (Cover will not change its position).
-	InvertDirections     bool   `json:"invert_directions"`     // Defines the motor rotation for open and close directions (changing this parameter requires a reboot). false - On open motor rotates clockwise, on close motor rotates counter-clockwise. true - On open motor rotates counter-clockwise, on close motor rotates clockwise.
-	MaxtimeClose         int    `json:"maxtime_close"`         // Default timeout after which Cover will stop moving in close direction.
-	MaxtimeOpen          int    `json:"maxtime_open"`          // Default timeout after which Cover will stop moving in open direction.
-	Motor                object `json:"motor"`                 // configuration of the Cover motor. The exact contents depend on the type of motor used. The descriptions below are valid when an AC motor is used.
-	Name                 string `json:"name,omitempty"`        // Name of the cover instance.
-	ObstructionDetection object `json:"obstruction_detection"` // Defines the behavior of the obstruction detection safety feature.
-	PowerLimit           int    `json:"power_limit"`           // Watts, limit that must be exceeded to trigger an overpower error.
-	SafetySwitch         object `json:"safety_switch"`         // Defines the behavior of the safety switch feature, only present if there are two inputs associated with the Cover instance. The safety_switch feature will only work when in_mode=single
-	SwapInputs           bool   `json:"swap_inputs"`           // Only present if there are two inputs associated with the Cover instance, defines whether the functions of the two inputs are swapped. The effect of swap_inputs is observable only when in_mode != detached. When swap_inputs is false: If in_mode = dual: input_0 is used to open, input_1 is used to close. If in_mode = single: input_0 is used to open/close/stop, input_1 is used as safety switch or is not used at all. When swap_inputs is true: If in_mode = dual: input_0 is used to close, input_1 is used to open. If in_mode = single: input_0 is used as safety switch or is not used at all, input_1 is used to open/close/stop.
-	UndervoltageLimit    int    `json:"undervoltage_limit"`    // Volts, limit that must be exceeded to trigger an undervoltage error.
-	VoltageLimit         int    `json:"voltage_limit"`         // Volts, limit that must be exceeded to trigger an undervoltage error.
+	CurrentLimit         int                                             `json:"current_limit"`         // Amperes, limit that must be exceeded to trigger an overcurrent error.
+	Id                   string                                          `json:"id"`                    // Id of the Cover component instance.
+	InMode               string                                          `json:"in_mode,omitempty"`     // One of single, dual or detached, only present if there is at least one input associated with the Cover instance. Single - Cover operation in both open and close directions is controlled via a single input. In this mode, only input_0 is used to open/close/stop the Cover. It doesn't matter if input_0 has in_type=switch or in_type=button, the behavior is the same: each switch toggle or button press cycles between open/stop/close/stop/... In single mode, input_1 is free to be used as a safety switch (e.g. end-of-motion limit switch, emergency-stop, etc.). dual - Cover operation is controlled via two inputs, one for open and one for close. In this mode, input_0 is used to open the Cover, input_1 is used to close the Cover.The exact behavior depends on the in_type of the inputs: if in_type = switch: toggle the switch to ON to move in the associated direction; toggle the switch to OFF to stop, if in_type = button: press the button to move in the associated direction; press the button again to stop. detached - Cover operation via the input/inputs is prohibited.
+	InitialState         string                                          `json:"initial_state"`         // Defines Cover target state on power-on, one of open (Cover will fully open), closed (Cover will fully close) or stopped (Cover will not change its position).
+	InvertDirections     bool                                            `json:"invert_directions"`     // Defines the motor rotation for open and close directions (changing this parameter requires a reboot). false - On open motor rotates clockwise, on close motor rotates counter-clockwise. true - On open motor rotates counter-clockwise, on close motor rotates clockwise.
+	MaxtimeClose         int                                             `json:"maxtime_close"`         // Default timeout after which Cover will stop moving in close direction.
+	MaxtimeOpen          int                                             `json:"maxtime_open"`          // Default timeout after which Cover will stop moving in open direction.
+	Motor                CoverSetConfigRequestConfigMotor                `json:"motor"`                 // configuration of the Cover motor. The exact contents depend on the type of motor used. The descriptions below are valid when an AC motor is used.
+	Name                 string                                          `json:"name,omitempty"`        // Name of the cover instance.
+	ObstructionDetection CoverSetConfigRequestConfigObstructionDetection `json:"obstruction_detection"` // Defines the behavior of the obstruction detection safety feature.
+	PowerLimit           int                                             `json:"power_limit"`           // Watts, limit that must be exceeded to trigger an overpower error.
+	SafetySwitch         CoverSetConfigRequestConfigSafetySwitch         `json:"safety_switch"`         // Defines the behavior of the safety switch feature, only present if there are two inputs associated with the Cover instance. The safety_switch feature will only work when in_mode=single
+	SwapInputs           bool                                            `json:"swap_inputs"`           // Only present if there are two inputs associated with the Cover instance, defines whether the functions of the two inputs are swapped. The effect of swap_inputs is observable only when in_mode != detached. When swap_inputs is false: If in_mode = dual: input_0 is used to open, input_1 is used to close. If in_mode = single: input_0 is used to open/close/stop, input_1 is used as safety switch or is not used at all. When swap_inputs is true: If in_mode = dual: input_0 is used to close, input_1 is used to open. If in_mode = single: input_0 is used as safety switch or is not used at all, input_1 is used to open/close/stop.
+	UndervoltageLimit    int                                             `json:"undervoltage_limit"`    // Volts, limit that must be exceeded to trigger an undervoltage error.
+	VoltageLimit         int                                             `json:"voltage_limit"`         // Volts, limit that must be exceeded to trigger an undervoltage error.
 }
 
 // CoverSetConfigResponse is the response of SetConfig.
@@ -275,7 +298,7 @@ type CoverGetStatusResponse struct {
 	CurrentPos    int                               `json:"current_pos"`       // Only present if Cover is calibrated. Represents current position in percent from 0 (fully closed) to 100 (fully open); null if position is unknown
 	Errors        []string                          `json:"errors"`            // Only present if an error condition has occurred
 	Id            int                               `json:"id"`                // The numeric ID of the Cover component instance
-	MoveStartedAt number                            `json:"move_started_at"`   // Only present if Cover is actively moving in either open or close directions. Represents the time at which the movement has begun
+	MoveStartedAt int                               `json:"move_started_at"`   // Only present if Cover is actively moving in either open or close directions. Represents the time at which the movement has begun
 	MoveTimeout   int                               `json:"move_timeout"`      // Seconds, only present if Cover is actively moving in either open or close directions. Cover will automatically stop after the timeout expires
 	Pf            int                               `json:"pf"`                // Power factor
 	PosControl    bool                              `json:"pos_control"`       // False if Cover is not calibrated and only discrete open/close is possible; true if Cover is calibrated and can be commanded to go to arbitrary positions between fully open and fully closed
@@ -350,7 +373,7 @@ func (r *CoverGetStatusResponse) GetId() int {
 }
 
 // Getmove_started_at returns the move_started_at value.
-func (r *CoverGetStatusResponse) GetMoveStartedAt() number {
+func (r *CoverGetStatusResponse) GetMoveStartedAt() int {
 	return r.MoveStartedAt
 }
 

@@ -19,7 +19,7 @@ type SwitchSetConfigRequestConfig struct {
 	AutoOn                   bool   `json:"auto_on"`                      // True if the "Automatic ON" function is enabled, false otherwise
 	AutoOnDelay              int    `json:"auto_on_delay"`                // Seconds to pass until the component is switched back on
 	AutorecoverVoltageErrors bool   `json:"autorecover_voltage_errors"`   // True if switch output state should be restored after over/undervoltage error is cleared, false otherwise (shown if applicable)
-	CurrentLimit             int    `json:"current_limit,omitempty"`      // Number, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)
+	CurrentLimit             int    `json:"current_limit,omitempty"`      // int, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)
 	Id                       string `json:"id"`                           // Id of the Switch component instance.
 	InMode                   string `json:"in_mode"`                      // Mode of the associated input. Range of values: momentary, follow, flip, detached
 	InitialState             string `json:"initial_state"`                // Output state to set on power_on. Range of values: off, on, restore_last, match_input
@@ -71,7 +71,7 @@ type SwitchGetConfigResponse struct {
 	AutoOn                   bool   `json:"auto_on"`                      // True if the "Automatic ON" function is enabled, false otherwise
 	AutoOnDelay              int    `json:"auto_on_delay"`                // Seconds to pass until the component is switched back on
 	AutorecoverVoltageErrors bool   `json:"autorecover_voltage_errors"`   // True if switch output state should be restored after over/undervoltage error is cleared, false otherwise (shown if applicable)
-	CurrentLimit             int    `json:"current_limit,omitempty"`      // Number, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)
+	CurrentLimit             int    `json:"current_limit,omitempty"`      // int, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)
 	Id                       string `json:"id"`                           // Id of the Switch component instance.
 	InMode                   string `json:"in_mode"`                      // Mode of the associated input. Range of values: momentary, follow, flip, detached
 	InitialState             string `json:"initial_state"`                // Output state to set on power_on. Range of values: off, on, restore_last, match_input
@@ -365,7 +365,7 @@ func (r *SwitchToggleResponse) GetWasOn() bool {
 type SwitchSetRequest struct {
 	Id          string `json:"id"`                     // Id of the Switch component instance.
 	On          bool   `json:"on"`                     // True for switch on, false otherwise.
-	ToggleAfter int    `json:"toggle_after,omitempty"` // Optional. Number, seconds to wait before toggling the switch back to its previous state.
+	ToggleAfter int    `json:"toggle_after,omitempty"` // Optional. int, seconds to wait before toggling the switch back to its previous state.
 }
 
 // SwitchSetResponse is the response of Set.
