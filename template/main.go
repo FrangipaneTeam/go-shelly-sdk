@@ -88,10 +88,10 @@ func main() {
 		}
 
 		for k, v := range v.Request {
-			if v.Type == "object" {
+			if strings.HasSuffix(v.Type, "object") {
 				extraStructsRequest[k] = v
 				for k2, v2 := range v.Items {
-					if v2.Type == "object" {
+					if strings.HasSuffix(v2.Type, "object") {
 						extraStructsRequest[strcase.ToCamel(fmt.Sprintf("%s_%s", k, k2))] = v2
 					}
 				}
@@ -99,10 +99,10 @@ func main() {
 		}
 
 		for k, v := range v.Response {
-			if v.Type == "object" {
+			if strings.HasSuffix(v.Type, "object") {
 				extraStructsResponse[k] = v
 				for k2, v2 := range v.Items {
-					if v2.Type == "object" {
+					if strings.HasSuffix(v2.Type, "object") {
 						extraStructsResponse[strcase.ToCamel(fmt.Sprintf("%s_%s", k, k2))] = v2
 					}
 				}
@@ -162,7 +162,7 @@ func main() {
 		// format the code
 		formattedContent, errFormat := format.Source(tpl.Bytes())
 		if errFormat != nil {
-			fmt.Printf("error from format : %v\n", errFormat)
+			fmt.Printf("error from format for component %s : %v\n", k, errFormat)
 			os.Exit(1)
 		}
 
