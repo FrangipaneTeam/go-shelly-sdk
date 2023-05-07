@@ -874,3 +874,131 @@ commands:
         rev:
           type: int
           description: "Current revision number of the schedule instances"
+    #
+    # End of Schedule
+    #
+
+    #
+    # HTTP
+    #
+    ## HTTP.Get - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/HTTP#httpget
+    - category: HTTP
+      name: GET
+      description: This method performs an HTTP GET request
+      request:
+        url:
+          type: string
+          description: "The URL to be requested"
+        timeout:
+          type: int
+          description: "The timeout in seconds for the request."
+          omitempty: true
+        ssl_ca:
+          type: string
+          description: "Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation."
+          omitempty: true
+      response:
+        code:
+          type: int
+          description: "Code of the HTTP response"
+        message:
+          type: string
+          description: "Msssage of the HTTP response"
+        headers:
+          type: "interface{}"
+          description: "List of HTTP headers sent by the server"
+        body:
+          type: string
+          description: "HTTP response body, if Content-Type is text or application/json"
+        body_b64:
+          type: string
+          description: "base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)"
+    ## HTTP.POST - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/HTTP#httppost
+    - category: HTTP
+      name: POST
+      description: This method performs an HTTP POST request
+      request:
+        url:
+          type: string
+          description: "The URL to be requested"
+        timeout:
+          type: int
+          description: "The timeout in seconds for the request."
+          omitempty: true
+        ssl_ca:
+          type: string
+          description: "Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation."
+          omitempty: true
+        headers:
+          type: "interface{}"
+          description: "List of HTTP headers to be sent to the server"
+        body:
+          type: string
+          description: "HTTP request body, if Content-Type is text or application/json"
+          omitempty: true
+        body_b64:
+          type: string
+          description: "base64 encoded HTTP request body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)"
+          omitempty: true
+      response:
+        code:
+          type: int
+          description: "Code of the HTTP response"
+        message:
+          type: string
+          description: "Msssage of the HTTP response"
+        headers:
+          type: "interface{}"
+          description: "List of HTTP headers sent by the server"
+        body:
+          type: string
+          description: "HTTP response body, if Content-Type is text or application/json"
+        body_b64:
+          type: string
+          description: "base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)"
+    ## HTTP.Request - https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/HTTP#httprequest
+    - category: HTTP
+      name: Request
+      description: This method allows sending several HTTP methods through HTTP/HTTPS and receiving response. Currently supported are GET, POST, PUT, HEAD and DELETE.
+      request:
+        method:
+          type: string
+          description: "The HTTP method to be used. One of: GET, POST, PUT, HEAD, DELETE"
+        url:
+          type: string
+          description: "The URL to be requested"
+        timeout:
+          type: int
+          description: "The timeout in seconds for the request."
+          omitempty: true
+        ssl_ca:
+          type: string
+          description: "Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation."
+          omitempty: true
+        headers:
+          type: "interface{}"
+          description: "User supplied headers for the request, keys are header names and values are header values. Optional. User-Agent and Content-Length headers are disallowed and will be replaced with default values if specified. Contnet-Type header defaults to application/json for body and application/octet-stream for body_b64 if not specified."
+        body:
+          type: string
+          description: "The request body. Disallowed for GET and HEAD and Required for POST and PUT."
+          omitempty: true
+        body_b64:
+          type: string
+          description: "Base64 encoded binary request body. Either body or body_b64 is allowed."
+          omitempty: true
+      response:
+        code:
+          type: int
+          description: "Code of the HTTP response"
+        message:
+          type: string
+          description: "Msssage of the HTTP response"
+        headers:
+          type: "interface{}"
+          description: "List of HTTP headers sent by the server"
+        body:
+          type: string
+          description: "HTTP response body, if Content-Type is text or application/json"
+        body_b64:
+          type: string
+          description: "base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)"
