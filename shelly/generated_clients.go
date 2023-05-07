@@ -70,3 +70,17 @@ type DevicePowerClient struct {
 func (c *Client) DevicePower() *DevicePowerClient {
 	return &DevicePowerClient{client: c}
 }
+
+/*
+ > Client Schedule
+*/
+
+// Schedule is the client for the Schedule.
+type ScheduleClient struct {
+	client *Client
+}
+
+// Schedule returns a client for the Schedule.
+func (c *Client) Schedule() *ScheduleClient {
+	return &ScheduleClient{client: c}
+}
