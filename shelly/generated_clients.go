@@ -84,3 +84,17 @@ type ScheduleClient struct {
 func (c *Client) Schedule() *ScheduleClient {
 	return &ScheduleClient{client: c}
 }
+
+/*
+ > Client HTTP
+*/
+
+// HTTP is the client for the HTTP.
+type HTTPClient struct {
+	client *Client
+}
+
+// HTTP returns a client for the HTTP.
+func (c *Client) HTTP() *HTTPClient {
+	return &HTTPClient{client: c}
+}
