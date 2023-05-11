@@ -13,59 +13,67 @@ package shelly
 
 // {{ .Category }}{{ .Name }}Request is the request of {{ .Name }}.
 type {{ .Category }}{{ .Name }}Request struct {
-    {{- range $k , $v := .Request }}
-	{{- if or (eq $v.Type "object") (eq $v.Type "[]object") }}
-	{{ $k | ToCamel }} {{ if eq $v.Type "[]object" }}[]{{end}}{{ $category }}{{ $name }}Request{{ $k | ToCamel }} `json:"{{ $k | ToLower }}{{ if $v.OmitEmpty }},omitempty{{ end }}"`{{ if $v.Description }} // {{ if $v.OmitEmpty }}Optional. {{end}}{{ $v.Description }}{{ end }}
-	{{- else }}
-    {{ $k | ToCamel }} {{ $v.Type }} `json:"{{ $k | ToLower }}{{ if $v.OmitEmpty }},omitempty{{ end }}"`{{ if $v.Description }} // {{ if $v.OmitEmpty }}Optional. {{end}}{{ $v.Description }}{{- end }}
-	{{- end }}
+	{{- range $k, $v := .Request }}
+			{{ if $v.Description }} // {{ template "optional" $v.OmitEmpty }}{{ $v.Description }}{{ end }}
+			{{ $k | ToCamel }}{{template "space"}}
+			{{- if or (eq $v.Type "object") (eq $v.Type "[]object") }}
+				{{- if eq $v.Type "[]object" }}[]{{end}}{{ $v.StructName }} `json:"{{ $k | ToLower }}{{ if $v.OmitEmpty }},omitempty{{ end }}"`
+			{{- else }}
+				{{- $v.Type }} `json:"{{ $k | ToLower }}"`
+			{{- end }}
 	{{- end }}
 }
 
 {{ if .ExtraStructsRequest }}
-{{ range $k, $v := .ExtraStructsRequest }}
-// {{ $category }}{{ $name }}Request{{ $k | ToCamel }} is the request of {{ $k }}.
-type {{ $category }}{{ $name }}Request{{ $k | ToCamel }} struct {
-	{{ range $k1, $v1 := $v.Items }}
-	{{- if or (eq $v1.Type "object") (eq $v1.Type "[]object") }}
-	{{ $k1 | ToCamel }} {{ if eq $v.Type "[]object" }}[]{{end}}{{ $category }}{{ $name }}Request{{ $k | ToCamel }}{{ $k1 | ToCamel }} `json:"{{ $k1 | ToLower }}{{ if $v1.OmitEmpty }},omitempty{{ end }}"`{{ if $v1.Description }} // {{ if $v1.OmitEmpty }}Optional. {{end}}{{ $v1.Description }}{{ end }}
-	{{- else }}
-	{{ $k1 | ToCamel }} {{ $v1.Type }} `json:"{{ $k1 | ToLower }}{{ if $v1.OmitEmpty }},omitempty{{ end }}"`{{ if $v1.Description }} // {{ $v1.Description }}{{ end }}
-	{{- end }}
-	{{- end }}
-}
-{{ end }}
+	{{ range $k, $v := .ExtraStructsRequest }}
+		// Extra {{ $v.StructName }} is the request of {{ $k }}.
+		type {{ $v.StructName }} struct {
+			{{- range $k1, $v1 := $v.Items }}
+				{{ if $v1.Description }} // {{ template "optional" $v1.OmitEmpty }}{{ $v1.Description }}{{ end }}
+				{{ $k1 | ToCamel }}{{template "space"}}
+				{{- if or (eq $v1.Type "object") (eq $v1.Type "[]object") }}
+					{{- if eq $v.Type "[]object" }}[]{{end}}{{ $v1.StructName }} `json:"{{ $k1 | ToLower }}{{ if $v1.OmitEmpty }},omitempty{{ end }}"`
+				{{- else }}
+					{{- $v1.Type }} `json:"{{ $k1 | ToLower }}"`
+				{{- end }}
+			{{- end }}
+		}
+	{{ end }}
 {{ end }}
 
 
 // {{ .Category }}{{ .Name }}Response is the response of {{ .Name }}.
 type {{ .Category }}{{ .Name }}Response struct {
     {{- range $k, $v := .Response }}
-	{{- if or (eq $v.Type "object") (eq $v.Type "[]object") }}
-	{{ $k | ToCamel }} {{ if eq $v.Type "[]object" }}[]{{end}}{{ $category }}{{ $name }}Response{{ $k | ToCamel }} `json:"{{ $k | ToLower }}{{ if $v.OmitEmpty }},omitempty{{ end }}"`{{ if $v.Description }} // {{ if $v.OmitEmpty }}Optional. {{end}}{{ $v.Description }}{{ end }}
-	{{- else }}
-    {{ $k  | ToCamel}} {{ $v.Type }} `json:"{{ $k | ToLower }}{{ if $v.OmitEmpty }},omitempty{{ end }}"`{{ if $v.Description }} // {{ $v.Description }}{{ end }}
-	{{- end }}
+		{{ if $v.Description }} // {{ template "optional" $v.OmitEmpty }}{{ $v.Description }}{{ end }}
+		{{ $k | ToCamel }}{{template "space"}}
+		{{- if or (eq $v.Type "object") (eq $v.Type "[]object") }}
+			{{- if eq $v.Type "[]object" }}[]{{end}}{{ $v.StructName }} `json:"{{ $k | ToLower }}{{ if $v.OmitEmpty }},omitempty{{ end }}"`
+		{{- else }}
+			{{- $v.Type }} `json:"{{ $k | ToLower }}"`
+		{{- end }}
 	{{- end }}
 }
 
 {{ if .ExtraStructsResponse }}
-{{ range $k, $v := .ExtraStructsResponse }}
-// {{ $category }}{{ $name }}Response{{ $k | ToCamel }} is the response of {{ $k }}.
-type {{ $category }}{{ $name }}Response{{ $k | ToCamel }} struct {
-	{{ range $k1, $v1 := $v.Items }}
-	{{- if or (eq $v1.Type "object") (eq $v1.Type "[]object") }}
-	{{ $k1 | ToCamel }} {{ if eq $v.Type "[]object" }}[]{{end}}{{ $category }}{{ $name }}Response{{ $k | ToCamel }}{{ $k1 | ToCamel }} `json:"{{ $k1 | ToLower }}{{ if $v1.OmitEmpty }},omitempty{{ end }}"`{{ if $v1.Description }} // {{ if $v1.OmitEmpty }}Optional. {{end}}{{ $v1.Description }}{{ end }}
-	{{- else }}
-	{{ $k1 | ToCamel }} {{ $v1.Type }} `json:"{{ $k1 | ToLower }}"`{{ if $v1.Description }} // {{ $v1.Description }}{{ end }}
-	{{- end }}
-	{{- end }}
-}
-{{ end }}
+	{{ range $k, $v := .ExtraStructsResponse }}
+		// {{ $v.StructName }} is the response of {{ $k }}.
+		type {{ $v.StructName }} struct {
+			{{- range $k1, $v1 := $v.Items }}
+					{{ if $v1.Description }} // {{ template "optional" $v1.OmitEmpty }}{{ $v1.Description }}{{ end }}
+					{{ $k1 | ToCamel }}{{template "space"}}
+					{{- if or (eq $v1.Type "object") (eq $v1.Type "[]object") }}
+						{{- if eq $v.Type "[]object" }}[]{{end}}{{ $v1.StructName }} `json:"{{ $k1 | ToLower }}{{ if $v1.OmitEmpty }},omitempty{{ end }}"`
+					{{- else }}
+						{{- $v1.Type }} `json:"{{ $k1 | ToLower }}"`
+					{{- end }}
+			{{- end }}
+		}
+	{{ end }}
 {{ end }}
 
 // readResponse reads the response into the given interface.
-func (r *{{ .Category }}{{ .Name }}Response) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *{{ .Category }}{{ .Name }}Response) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -73,7 +81,7 @@ func (r *{{ .Category }}{{ .Name }}Response) readResponse(reader *responseReader
 }
 
 // {{ .Name }} {{ .Description }}
-func (c {{ .Category }}Client) {{ .Name }}(args {{ .Category }}{{ .Name }}Request) (resp *{{ .Category }}{{ .Name }}Response, err error) { //nolint:dupl
+func (c {{ .Category }}Client) {{ .Name }}(args {{ .Category }}{{ .Name }}Request) (resp *{{ .Category }}{{ .Name }}Response, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("{{ .Category }}.{{ .Name }}", args, &reader.Response); err != nil {
@@ -85,22 +93,27 @@ func (c {{ .Category }}Client) {{ .Name }}(args {{ .Category }}{{ .Name }}Reques
 }
 
 {{ range $k , $v := .Response }}
-// Get{{ $k }} returns the {{ $k }} value.
-func (r *{{ $category }}{{ $name }}Response) Get{{ $k | ToCamel }}() {{- if or (eq $v.Type "object") (eq $v.Type "[]object") }}{{- if eq $v.Type "[]object" }}[]{{end}}{{ $category }}{{ $name }}Response{{ $k | ToCamel }}{{else}}{{ $v.Type }}{{end}} {
-    return r.{{ $k | ToCamel }}
-}
+	// Get{{ $k }} returns the {{ $k }} value.
+	func (r *{{ $category }}{{ $name }}Response) Get{{ $v.CamelName }}() {{ if or (eq $v.Type "object") (eq $v.Type "[]object") }}{{ if eq $v.Type "[]object" }}[]{{end}}{{ $v.StructName }}{{else}}{{ $v.Type }}{{end}} {
+		return r.{{ $v.CamelName }}
+	}
 {{ end }}
 
 {{ if .ExtraStructsResponse }}
-{{ range $k, $v := .ExtraStructsResponse }}
-{{ range $k1 , $v1 := $v.Items }}
-// Get{{ $k1 }} returns the {{ $k1 }} value.
-func (r *{{ $category }}{{ $name }}Response{{ $k | ToCamel }}) Get{{ $k1 | ToCamel }}() {{- if or (eq $v1.Type "object") (eq $v1.Type "[]object") }}{{- if eq $v1.Type "[]object" }}[]{{end}}{{ $category }}{{ $name }}Response{{ $k | ToCamel }}{{ $k1 | ToCamel }}{{else}}{{ $v1.Type }}{{end}} {
-    return r.{{ $k1 | ToCamel }}
-}
-{{ end }}
-{{ end }}
-{{ end }}
-
+	{{ range $k, $v := .ExtraStructsResponse }}
+		{{ range $k1 , $v1 := $v.Items }}
+			// Get{{ $v1.CamelName }} returns the {{ $k1 }} value.
+			func (r *{{ $v.StructName }}) Get{{ $v1.CamelName }}()  {{ if or (eq $v1.Type "object") (eq $v1.Type "[]object") }}{{ if eq $v1.Type "[]object" }}[]{{end}}{{ $v1.StructName }}{{else}}{{ $v1.Type }}{{end}} {
+				return r.{{ $v1.CamelName }}
+			}
+		{{ end }}
+	{{ end }}
 {{ end }}
 
+{{ end }}
+
+{{ define "optional" }}
+{{- if .}}Optional. {{ end -}} 
+{{ end }}
+
+{{ define "space" }} {{end}}

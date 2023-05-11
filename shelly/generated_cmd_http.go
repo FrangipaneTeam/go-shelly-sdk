@@ -8,22 +8,30 @@ package shelly
 
 // HTTPGETRequest is the request of GET.
 type HTTPGETRequest struct {
-	SslCa   string `json:"ssl_ca,omitempty"`  // Optional. Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation.
-	Timeout int    `json:"timeout,omitempty"` // Optional. The timeout in seconds for the request.
-	Url     string `json:"url"`               // The URL to be requested
+	// Optional. Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation.
+	SslCa string `json:"ssl_ca"`
+	// Optional. The timeout in seconds for the request.
+	Timeout int `json:"timeout"`
+	// The URL to be requested
+	Url string `json:"url"`
 }
 
 // HTTPGETResponse is the response of GET.
 type HTTPGETResponse struct {
-	Body    string      `json:"body"`     // HTTP response body, if Content-Type is text or application/json
-	BodyB64 string      `json:"body_b64"` // base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
-	Code    int         `json:"code"`     // Code of the HTTP response
-	Headers interface{} `json:"headers"`  // List of HTTP headers sent by the server
-	Message string      `json:"message"`  // Msssage of the HTTP response
+	// HTTP response body, if Content-Type is text or application/json
+	Body string `json:"body"`
+	// base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
+	BodyB64 string `json:"body_b64"`
+	// Code of the HTTP response
+	Code int `json:"code"`
+	// List of HTTP headers sent by the server
+	Headers interface{} `json:"headers"`
+	// Msssage of the HTTP response
+	Message string `json:"message"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *HTTPGETResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *HTTPGETResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -31,7 +39,7 @@ func (r *HTTPGETResponse) readResponse(reader *responseReader) error { //nolint:
 }
 
 // GET This method performs an HTTP GET request
-func (c HTTPClient) GET(args HTTPGETRequest) (resp *HTTPGETResponse, err error) { //nolint:dupl
+func (c HTTPClient) GET(args HTTPGETRequest) (resp *HTTPGETResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("HTTP.GET", args, &reader.Response); err != nil {
@@ -74,25 +82,36 @@ func (r *HTTPGETResponse) GetMessage() string {
 
 // HTTPPOSTRequest is the request of POST.
 type HTTPPOSTRequest struct {
-	Body    string      `json:"body,omitempty"`     // Optional. HTTP request body, if Content-Type is text or application/json
-	BodyB64 string      `json:"body_b64,omitempty"` // Optional. base64 encoded HTTP request body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
-	Headers interface{} `json:"headers"`            // List of HTTP headers to be sent to the server
-	SslCa   string      `json:"ssl_ca,omitempty"`   // Optional. Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation.
-	Timeout int         `json:"timeout,omitempty"`  // Optional. The timeout in seconds for the request.
-	Url     string      `json:"url"`                // The URL to be requested
+	// Optional. HTTP request body, if Content-Type is text or application/json
+	Body string `json:"body"`
+	// Optional. base64 encoded HTTP request body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
+	BodyB64 string `json:"body_b64"`
+	// List of HTTP headers to be sent to the server
+	Headers interface{} `json:"headers"`
+	// Optional. Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation.
+	SslCa string `json:"ssl_ca"`
+	// Optional. The timeout in seconds for the request.
+	Timeout int `json:"timeout"`
+	// The URL to be requested
+	Url string `json:"url"`
 }
 
 // HTTPPOSTResponse is the response of POST.
 type HTTPPOSTResponse struct {
-	Body    string      `json:"body"`     // HTTP response body, if Content-Type is text or application/json
-	BodyB64 string      `json:"body_b64"` // base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
-	Code    int         `json:"code"`     // Code of the HTTP response
-	Headers interface{} `json:"headers"`  // List of HTTP headers sent by the server
-	Message string      `json:"message"`  // Msssage of the HTTP response
+	// HTTP response body, if Content-Type is text or application/json
+	Body string `json:"body"`
+	// base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
+	BodyB64 string `json:"body_b64"`
+	// Code of the HTTP response
+	Code int `json:"code"`
+	// List of HTTP headers sent by the server
+	Headers interface{} `json:"headers"`
+	// Msssage of the HTTP response
+	Message string `json:"message"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *HTTPPOSTResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *HTTPPOSTResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -100,7 +119,7 @@ func (r *HTTPPOSTResponse) readResponse(reader *responseReader) error { //nolint
 }
 
 // POST This method performs an HTTP POST request
-func (c HTTPClient) POST(args HTTPPOSTRequest) (resp *HTTPPOSTResponse, err error) { //nolint:dupl
+func (c HTTPClient) POST(args HTTPPOSTRequest) (resp *HTTPPOSTResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("HTTP.POST", args, &reader.Response); err != nil {
@@ -143,26 +162,38 @@ func (r *HTTPPOSTResponse) GetMessage() string {
 
 // HTTPRequestRequest is the request of Request.
 type HTTPRequestRequest struct {
-	Body    string      `json:"body,omitempty"`     // Optional. The request body. Disallowed for GET and HEAD and Required for POST and PUT.
-	BodyB64 string      `json:"body_b64,omitempty"` // Optional. Base64 encoded binary request body. Either body or body_b64 is allowed.
-	Headers interface{} `json:"headers"`            // User supplied headers for the request, keys are header names and values are header values. Optional. User-Agent and Content-Length headers are disallowed and will be replaced with default values if specified. Contnet-Type header defaults to application/json for body and application/octet-stream for body_b64 if not specified.
-	Method  string      `json:"method"`             // The HTTP method to be used. One of: GET, POST, PUT, HEAD, DELETE
-	SslCa   string      `json:"ssl_ca,omitempty"`   // Optional. Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation.
-	Timeout int         `json:"timeout,omitempty"`  // Optional. The timeout in seconds for the request.
-	Url     string      `json:"url"`                // The URL to be requested
+	// Optional. The request body. Disallowed for GET and HEAD and Required for POST and PUT.
+	Body string `json:"body"`
+	// Optional. Base64 encoded binary request body. Either body or body_b64 is allowed.
+	BodyB64 string `json:"body_b64"`
+	// User supplied headers for the request, keys are header names and values are header values. Optional. User-Agent and Content-Length headers are disallowed and will be replaced with default values if specified. Contnet-Type header defaults to application/json for body and application/octet-stream for body_b64 if not specified.
+	Headers interface{} `json:"headers"`
+	// The HTTP method to be used. One of: GET, POST, PUT, HEAD, DELETE
+	Method string `json:"method"`
+	// Optional. Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation.
+	SslCa string `json:"ssl_ca"`
+	// Optional. The timeout in seconds for the request.
+	Timeout int `json:"timeout"`
+	// The URL to be requested
+	Url string `json:"url"`
 }
 
 // HTTPRequestResponse is the response of Request.
 type HTTPRequestResponse struct {
-	Body    string      `json:"body"`     // HTTP response body, if Content-Type is text or application/json
-	BodyB64 string      `json:"body_b64"` // base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
-	Code    int         `json:"code"`     // Code of the HTTP response
-	Headers interface{} `json:"headers"`  // List of HTTP headers sent by the server
-	Message string      `json:"message"`  // Msssage of the HTTP response
+	// HTTP response body, if Content-Type is text or application/json
+	Body string `json:"body"`
+	// base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
+	BodyB64 string `json:"body_b64"`
+	// Code of the HTTP response
+	Code int `json:"code"`
+	// List of HTTP headers sent by the server
+	Headers interface{} `json:"headers"`
+	// Msssage of the HTTP response
+	Message string `json:"message"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *HTTPRequestResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *HTTPRequestResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -170,7 +201,7 @@ func (r *HTTPRequestResponse) readResponse(reader *responseReader) error { //nol
 }
 
 // Request This method allows sending several HTTP methods through HTTP/HTTPS and receiving response. Currently supported are GET, POST, PUT, HEAD and DELETE.
-func (c HTTPClient) Request(args HTTPRequestRequest) (resp *HTTPRequestResponse, err error) { //nolint:dupl
+func (c HTTPClient) Request(args HTTPRequestRequest) (resp *HTTPRequestResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("HTTP.Request", args, &reader.Response); err != nil {

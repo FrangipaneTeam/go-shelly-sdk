@@ -8,15 +8,20 @@ package shelly
 
 // ScheduleCreateRequest is the request of Create.
 type ScheduleCreateRequest struct {
-	Calls    []ScheduleCreateRequestCalls `json:"calls"`    // RPC methods and arguments to be invoked when the job gets executed. It must contain at least one valid object. There is a limit of 5 calls per schedule
-	Enable   bool                         `json:"enable"`   // true to enable the execution of this job, false otherwise. It is true by default.
-	Timespec string                       `json:"timespec"` // As defined by cron. Note that leading 0s are not supported (e.g.: for 8 AM you should set 8 instead of 08).
+	// RPC methods and arguments to be invoked when the job gets executed. It must contain at least one valid object. There is a limit of 5 calls per schedule
+	Calls []ScheduleCreateRequestCalls `json:"calls"`
+	// true to enable the execution of this job, false otherwise. It is true by default.
+	Enable bool `json:"enable"`
+	// As defined by cron. Note that leading 0s are not supported (e.g.: for 8 AM you should set 8 instead of 08).
+	Timespec string `json:"timespec"`
 }
 
-// ScheduleCreateRequestCalls is the request of calls.
+// Extra ScheduleCreateRequestCalls is the request of ScheduleCreateRequestCalls.
 type ScheduleCreateRequestCalls struct {
-	Method string      `json:"method"` // Name of the RPC method
-	Params interface{} `json:"params"` // The parameters used to invoke the RPC call. If the call requires no parameters params will be omitted
+	// Name of the RPC method
+	Method string `json:"method"`
+	// The parameters used to invoke the RPC call. If the call requires no parameters params will be omitted
+	Params interface{} `json:"params"`
 }
 
 // ScheduleCreateResponse is the response of Create.
@@ -24,7 +29,7 @@ type ScheduleCreateResponse struct {
 }
 
 // readResponse reads the response into the given interface.
-func (r *ScheduleCreateResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *ScheduleCreateResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -32,7 +37,7 @@ func (r *ScheduleCreateResponse) readResponse(reader *responseReader) error { //
 }
 
 // Create This method creates a new schedule job
-func (c ScheduleClient) Create(args ScheduleCreateRequest) (resp *ScheduleCreateResponse, err error) { //nolint:dupl
+func (c ScheduleClient) Create(args ScheduleCreateRequest) (resp *ScheduleCreateResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("Schedule.Create", args, &reader.Response); err != nil {
@@ -50,25 +55,32 @@ func (c ScheduleClient) Create(args ScheduleCreateRequest) (resp *ScheduleCreate
 
 // ScheduleUpdateRequest is the request of Update.
 type ScheduleUpdateRequest struct {
-	Calls    []ScheduleUpdateRequestCalls `json:"calls"`    // RPC methods and arguments to be invoked when the job gets executed. It must contain at least one valid object. There is a limit of 5 calls per schedule
-	Enable   bool                         `json:"enable"`   // true to enable the execution of this job, false otherwise. It is true by default.
-	Id       string                       `json:"id"`       // The numeric ID of the Schedule component instance
-	Timespec string                       `json:"timespec"` // As defined by cron. Note that leading 0s are not supported (e.g.: for 8 AM you should set 8 instead of 08).
+	// RPC methods and arguments to be invoked when the job gets executed. It must contain at least one valid object. There is a limit of 5 calls per schedule
+	Calls []ScheduleUpdateRequestCalls `json:"calls"`
+	// true to enable the execution of this job, false otherwise. It is true by default.
+	Enable bool `json:"enable"`
+	// The numeric ID of the Schedule component instance
+	Id string `json:"id"`
+	// As defined by cron. Note that leading 0s are not supported (e.g.: for 8 AM you should set 8 instead of 08).
+	Timespec string `json:"timespec"`
 }
 
-// ScheduleUpdateRequestCalls is the request of calls.
+// Extra ScheduleUpdateRequestCalls is the request of ScheduleUpdateRequestCalls.
 type ScheduleUpdateRequestCalls struct {
-	Method string      `json:"method"` // Name of the RPC method
-	Params interface{} `json:"params"` // The parameters used to invoke the RPC call. If the call requires no parameters params will be omitted
+	// Name of the RPC method
+	Method string `json:"method"`
+	// The parameters used to invoke the RPC call. If the call requires no parameters params will be omitted
+	Params interface{} `json:"params"`
 }
 
 // ScheduleUpdateResponse is the response of Update.
 type ScheduleUpdateResponse struct {
-	Rev int `json:"rev"` // Current revision number of the schedule instances
+	// Current revision number of the schedule instances
+	Rev int `json:"rev"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *ScheduleUpdateResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *ScheduleUpdateResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -76,7 +88,7 @@ func (r *ScheduleUpdateResponse) readResponse(reader *responseReader) error { //
 }
 
 // Update This method updates an existing schedule job
-func (c ScheduleClient) Update(args ScheduleUpdateRequest) (resp *ScheduleUpdateResponse, err error) { //nolint:dupl
+func (c ScheduleClient) Update(args ScheduleUpdateRequest) (resp *ScheduleUpdateResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("Schedule.Update", args, &reader.Response); err != nil {
@@ -103,26 +115,34 @@ type ScheduleListRequest struct {
 
 // ScheduleListResponse is the response of List.
 type ScheduleListResponse struct {
-	Jobs []ScheduleListResponseJobs `json:"jobs"` // Each entry is a schedule job object
-	Rev  int                        `json:"rev"`  // Current revision number of the schedule instances
+	// Each entry is a schedule job object
+	Jobs []ScheduleListResponseJobs `json:"jobs"`
+	// Current revision number of the schedule instances
+	Rev int `json:"rev"`
 }
 
-// ScheduleListResponseJobsCalls is the response of JobsCalls.
-type ScheduleListResponseJobsCalls struct {
-	Method string      `json:"method"` // Name of the RPC method
-	Params interface{} `json:"params"` // The parameters used to invoke the RPC call. If the call requires no parameters params will be omitted
-}
-
-// ScheduleListResponseJobs is the response of jobs.
+// ScheduleListResponseJobs is the response of ScheduleListResponseJobs.
 type ScheduleListResponseJobs struct {
-	Calls    []ScheduleListResponseJobsCalls `json:"calls"`    // RPC methods and arguments to be invoked when the job gets executed. It must contain at least one valid object. There is a limit of 5 calls per schedule
-	Enable   bool                            `json:"enable"`   // true to enable the execution of this job, false otherwise. It is true by default.
-	Id       string                          `json:"id"`       // The numeric ID of the Schedule component instance
-	Timespec string                          `json:"timespec"` // As defined by cron. Note that leading 0s are not supported (e.g.: for 8 AM you should set 8 instead of 08).
+	// RPC methods and arguments to be invoked when the job gets executed. It must contain at least one valid object. There is a limit of 5 calls per schedule
+	Calls []ScheduleListResponseJobsCalls `json:"calls"`
+	// true to enable the execution of this job, false otherwise. It is true by default.
+	Enable bool `json:"enable"`
+	// The numeric ID of the Schedule component instance
+	Id string `json:"id"`
+	// As defined by cron. Note that leading 0s are not supported (e.g.: for 8 AM you should set 8 instead of 08).
+	Timespec string `json:"timespec"`
+}
+
+// ScheduleListResponseJobsCalls is the response of ScheduleListResponseJobsCalls.
+type ScheduleListResponseJobsCalls struct {
+	// Name of the RPC method
+	Method string `json:"method"`
+	// The parameters used to invoke the RPC call. If the call requires no parameters params will be omitted
+	Params interface{} `json:"params"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *ScheduleListResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *ScheduleListResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -130,7 +150,7 @@ func (r *ScheduleListResponse) readResponse(reader *responseReader) error { //no
 }
 
 // List This method returns a list of all schedule jobs
-func (c ScheduleClient) List(args ScheduleListRequest) (resp *ScheduleListResponse, err error) { //nolint:dupl
+func (c ScheduleClient) List(args ScheduleListRequest) (resp *ScheduleListResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("Schedule.List", args, &reader.Response); err != nil {
@@ -151,34 +171,34 @@ func (r *ScheduleListResponse) GetRev() int {
 	return r.Rev
 }
 
-// Getmethod returns the method value.
-func (r *ScheduleListResponseJobsCalls) GetMethod() string {
-	return r.Method
-}
-
-// Getparams returns the params value.
-func (r *ScheduleListResponseJobsCalls) GetParams() interface{} {
-	return r.Params
-}
-
-// Getcalls returns the calls value.
+// GetCalls returns the calls value.
 func (r *ScheduleListResponseJobs) GetCalls() []ScheduleListResponseJobsCalls {
 	return r.Calls
 }
 
-// Getenable returns the enable value.
+// GetEnable returns the enable value.
 func (r *ScheduleListResponseJobs) GetEnable() bool {
 	return r.Enable
 }
 
-// Getid returns the id value.
+// GetId returns the id value.
 func (r *ScheduleListResponseJobs) GetId() string {
 	return r.Id
 }
 
-// Gettimespec returns the timespec value.
+// GetTimespec returns the timespec value.
 func (r *ScheduleListResponseJobs) GetTimespec() string {
 	return r.Timespec
+}
+
+// GetMethod returns the method value.
+func (r *ScheduleListResponseJobsCalls) GetMethod() string {
+	return r.Method
+}
+
+// GetParams returns the params value.
+func (r *ScheduleListResponseJobsCalls) GetParams() interface{} {
+	return r.Params
 }
 
 /*
@@ -188,16 +208,18 @@ func (r *ScheduleListResponseJobs) GetTimespec() string {
 
 // ScheduleDeleteRequest is the request of Delete.
 type ScheduleDeleteRequest struct {
-	Id string `json:"id"` // The numeric ID of the Schedule component instance
+	// The numeric ID of the Schedule component instance
+	Id string `json:"id"`
 }
 
 // ScheduleDeleteResponse is the response of Delete.
 type ScheduleDeleteResponse struct {
-	Rev int `json:"rev"` // Current revision number of the schedule instances
+	// Current revision number of the schedule instances
+	Rev int `json:"rev"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *ScheduleDeleteResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *ScheduleDeleteResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -205,7 +227,7 @@ func (r *ScheduleDeleteResponse) readResponse(reader *responseReader) error { //
 }
 
 // Delete This method deletes an existing schedule job
-func (c ScheduleClient) Delete(args ScheduleDeleteRequest) (resp *ScheduleDeleteResponse, err error) { //nolint:dupl
+func (c ScheduleClient) Delete(args ScheduleDeleteRequest) (resp *ScheduleDeleteResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("Schedule.Delete", args, &reader.Response); err != nil {
@@ -232,11 +254,12 @@ type ScheduleDeleteAllRequest struct {
 
 // ScheduleDeleteAllResponse is the response of DeleteAll.
 type ScheduleDeleteAllResponse struct {
-	Rev int `json:"rev"` // Current revision number of the schedule instances
+	// Current revision number of the schedule instances
+	Rev int `json:"rev"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *ScheduleDeleteAllResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *ScheduleDeleteAllResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -244,7 +267,7 @@ func (r *ScheduleDeleteAllResponse) readResponse(reader *responseReader) error {
 }
 
 // DeleteAll This method deletes all existing schedule jobs
-func (c ScheduleClient) DeleteAll(args ScheduleDeleteAllRequest) (resp *ScheduleDeleteAllResponse, err error) { //nolint:dupl
+func (c ScheduleClient) DeleteAll(args ScheduleDeleteAllRequest) (resp *ScheduleDeleteAllResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("Schedule.DeleteAll", args, &reader.Response); err != nil {
