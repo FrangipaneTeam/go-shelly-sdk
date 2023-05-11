@@ -13,7 +13,9 @@ type responseReader struct {
 
 // NewResponseReader creates a new response reader.
 func NewResponseReader() *responseReader {
-	return &responseReader{}
+	return &responseReader{
+		Response: interface{}(nil),
+	}
 }
 
 // Read read the response into the given interface.
