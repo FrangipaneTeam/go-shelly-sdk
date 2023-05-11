@@ -12,7 +12,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	deviceInfoResponse, err := s.Shelly().GetDeviceInfo(shelly.ShellyGetDeviceInfoRequest{})
+	deviceInfoResponse, err := s.Shelly().GetDeviceInfo(shelly.ShellyGetDeviceInfoRequest{
+		Ident: false,
+	})
 	if err != nil {
 		s.Close()
 		log.Fatal(err)
