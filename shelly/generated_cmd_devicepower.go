@@ -8,30 +8,38 @@ package shelly
 
 // DevicePowerGetStatusRequest is the request of GetStatus.
 type DevicePowerGetStatusRequest struct {
-	Id string `json:"id"` // Id of the DevicePower component instance
+	// Id of the DevicePower component instance
+	Id string `json:"id"`
 }
 
 // DevicePowerGetStatusResponse is the response of GetStatus.
 type DevicePowerGetStatusResponse struct {
-	Battery  DevicePowerGetStatusResponseBattery  `json:"battery"`  // Information about the battery charge
-	Errors   []string                             `json:"errors"`   // Whether external power source is connected
-	External DevicePowerGetStatusResponseExternal `json:"external"` // Information about the external power source (only available if external power source is supported)
-	Id       int                                  `json:"id"`       // Id of the DevicePower component instance
+	// Information about the battery charge
+	Battery DevicePowerGetStatusResponseBattery `json:"battery"`
+	// Whether external power source is connected
+	Errors []string `json:"errors"`
+	// Information about the external power source (only available if external power source is supported)
+	External DevicePowerGetStatusResponseExternal `json:"external"`
+	// Id of the DevicePower component instance
+	Id int `json:"id"`
 }
 
-// DevicePowerGetStatusResponseBattery is the response of battery.
+// DevicePowerGetStatusResponseBattery is the response of DevicePowerGetStatusResponseBattery.
 type DevicePowerGetStatusResponseBattery struct {
-	Percent int `json:"percent"` // Battery charge level in % (null if valid value could not be obtained)
-	V       int `json:"v"`       // Battery voltage in Volts (null if valid value could not be obtained)
+	// Optional. Battery charge level in % (null if valid value could not be obtained)
+	Percent int `json:"percent"`
+	// Optional. Battery voltage in Volts (null if valid value could not be obtained)
+	V int `json:"v"`
 }
 
-// DevicePowerGetStatusResponseExternal is the response of external.
+// DevicePowerGetStatusResponseExternal is the response of DevicePowerGetStatusResponseExternal.
 type DevicePowerGetStatusResponseExternal struct {
-	Present bool `json:"present"` // Whether external power source is connected
+	// Whether external power source is connected
+	Present bool `json:"present"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *DevicePowerGetStatusResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *DevicePowerGetStatusResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -39,7 +47,7 @@ func (r *DevicePowerGetStatusResponse) readResponse(reader *responseReader) erro
 }
 
 // GetStatus Get DevicePower status
-func (c DevicePowerClient) GetStatus(args DevicePowerGetStatusRequest) (resp *DevicePowerGetStatusResponse, err error) { //nolint:dupl
+func (c DevicePowerClient) GetStatus(args DevicePowerGetStatusRequest) (resp *DevicePowerGetStatusResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("DevicePower.GetStatus", args, &reader.Response); err != nil {
@@ -70,17 +78,17 @@ func (r *DevicePowerGetStatusResponse) GetId() int {
 	return r.Id
 }
 
-// Getpercent returns the percent value.
+// GetPercent returns the percent value.
 func (r *DevicePowerGetStatusResponseBattery) GetPercent() int {
 	return r.Percent
 }
 
-// Getv returns the v value.
+// GetV returns the v value.
 func (r *DevicePowerGetStatusResponseBattery) GetV() int {
 	return r.V
 }
 
-// Getpresent returns the present value.
+// GetPresent returns the present value.
 func (r *DevicePowerGetStatusResponseExternal) GetPresent() bool {
 	return r.Present
 }

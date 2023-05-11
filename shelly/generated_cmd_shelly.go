@@ -3,7 +3,7 @@ package shelly
 
 /*
  > Command Shelly.ListMethods
- > This method lists all available RPC methods. It takes into account both ACL and authentication restrictions and only lists the methods allowed for the particular user/channel that's making the request.
+ > This method lists all available RPC methods. It takes into account both ACL and authentication restrictions and only lists the methods allowed for the particular user/channel that&#39;s making the request.
 */
 
 // ShellyListMethodsRequest is the request of ListMethods.
@@ -12,19 +12,20 @@ type ShellyListMethodsRequest struct {
 
 // ShellyListMethodsResponse is the response of ListMethods.
 type ShellyListMethodsResponse struct {
-	Methods map[string]string `json:"methods"` // Names of the methods allowed.
+	// Names of the methods allowed.
+	Methods map[string]string `json:"methods"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *ShellyListMethodsResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *ShellyListMethodsResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
 	return reader.Read(r)
 }
 
-// ListMethods This method lists all available RPC methods. It takes into account both ACL and authentication restrictions and only lists the methods allowed for the particular user/channel that's making the request.
-func (c ShellyClient) ListMethods(args ShellyListMethodsRequest) (resp *ShellyListMethodsResponse, err error) { //nolint:dupl
+// ListMethods This method lists all available RPC methods. It takes into account both ACL and authentication restrictions and only lists the methods allowed for the particular user/channel that&#39;s making the request.
+func (c ShellyClient) ListMethods(args ShellyListMethodsRequest) (resp *ShellyListMethodsResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("Shelly.ListMethods", args, &reader.Response); err != nil {
@@ -47,29 +48,44 @@ func (r *ShellyListMethodsResponse) GetMethods() map[string]string {
 
 // ShellyGetDeviceInfoRequest is the request of GetDeviceInfo.
 type ShellyGetDeviceInfoRequest struct {
-	Ident bool `json:"ident,omitempty"` // Optional. Flag specifying if extra identifying information should be displayed.
+	// Optional. Flag specifying if extra identifying information should be displayed.
+	Ident bool `json:"ident"`
 }
 
 // ShellyGetDeviceInfoResponse is the response of GetDeviceInfo.
 type ShellyGetDeviceInfoResponse struct {
-	App          string `json:"app"`          // Application name.
-	AuthDomain   string `json:"auth_domain"`  // Name of the domain (null if authentication is not enabled).
-	AuthEn       bool   `json:"auth_en"`      // true if authentication is enabled, false otherwise.
-	Batch        string `json:"batch"`        // Batch used to provision the device, present only when the ident parameter is set to true
-	Discoverable bool   `json:"discoverable"` // true if the device is discoverable, false otherwise.
-	FwId         string `json:"fw_id"`        // Id of the firmware of the device.
-	FwSbits      string `json:"fw_sbits"`     // Shelly internal flags, present only when the ident parameter is set to true
-	Gen          int    `json:"gen"`          // Generation of the device.
-	Id           string `json:"id"`           // Id of the device.
-	Key          string `json:"key"`          // Cloud key of the device (see note below), present only when the ident parameter is set to true
-	Mac          string `json:"mac"`          // MAC address of the device.
-	Model        string `json:"model"`        // Model of the device.
-	Profile      string `json:"profile"`      // Name of the device profile (only applicable for multi-profile devices).
-	Ver          string `json:"ver"`          // Version of the firmware of the device.
+	// Application name.
+	App string `json:"app"`
+	// Name of the domain (null if authentication is not enabled).
+	AuthDomain string `json:"auth_domain"`
+	// true if authentication is enabled, false otherwise.
+	AuthEn bool `json:"auth_en"`
+	// Batch used to provision the device, present only when the ident parameter is set to true
+	Batch string `json:"batch"`
+	// true if the device is discoverable, false otherwise.
+	Discoverable bool `json:"discoverable"`
+	// Id of the firmware of the device.
+	FwId string `json:"fw_id"`
+	// Shelly internal flags, present only when the ident parameter is set to true
+	FwSbits string `json:"fw_sbits"`
+	// Generation of the device.
+	Gen int `json:"gen"`
+	// Id of the device.
+	Id string `json:"id"`
+	// Cloud key of the device (see note below), present only when the ident parameter is set to true
+	Key string `json:"key"`
+	// MAC address of the device.
+	Mac string `json:"mac"`
+	// Model of the device.
+	Model string `json:"model"`
+	// Name of the device profile (only applicable for multi-profile devices).
+	Profile string `json:"profile"`
+	// Version of the firmware of the device.
+	Ver string `json:"ver"`
 }
 
 // readResponse reads the response into the given interface.
-func (r *ShellyGetDeviceInfoResponse) readResponse(reader *responseReader) error { //nolint:dupl
+func (r *ShellyGetDeviceInfoResponse) readResponse(reader *responseReader) error {
 	if reader.Response == nil {
 		return ErrInvalidResponse
 	}
@@ -77,7 +93,7 @@ func (r *ShellyGetDeviceInfoResponse) readResponse(reader *responseReader) error
 }
 
 // GetDeviceInfo This method returns information about the device.
-func (c ShellyClient) GetDeviceInfo(args ShellyGetDeviceInfoRequest) (resp *ShellyGetDeviceInfoResponse, err error) { //nolint:dupl
+func (c ShellyClient) GetDeviceInfo(args ShellyGetDeviceInfoRequest) (resp *ShellyGetDeviceInfoResponse, err error) {
 	reader := NewResponseReader()
 
 	if err = c.client.rpc.Call("Shelly.GetDeviceInfo", args, &reader.Response); err != nil {
