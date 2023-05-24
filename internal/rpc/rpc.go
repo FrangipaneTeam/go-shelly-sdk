@@ -1,19 +1,17 @@
 package rpc
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"net/rpc"
-	"net/rpc/jsonrpc"
 
-	"golang.org/x/net/websocket"
+	"github.com/ybbus/jsonrpc/v3"
 )
 
 var ErrMissingRequiredArgs = errors.New("missing required args")
 
 type RPC struct {
-	ws  *websocket.Conn
-	rpc *rpc.Client
+	rpc jsonrpc.RPCClient
 	ip  string
 }
 
@@ -45,34 +43,24 @@ func New(rA RequiredArgs, oA ...Args) (*RPC, error) {
 		return nil, ErrMissingRequiredArgs
 	}
 
-	if o.origin == "" {
-		o.origin = "http://localhost"
-	}
+	rpc := jsonrpc.NewClientWithOpts("http://"+rA.IP+"/rpc", &jsonrpc.RPCClientOpts{
+		AllowUnknownFields: true,
+	})
 
-	ws, err := websocket.Dial("ws://"+rA.IP+"/rpc", "", o.origin)
-	if err != nil {
-		return nil, fmt.Errorf("could not connect to %s: %w", rA.IP, err)
-	}
-
-	rpc := jsonrpc.NewClient(ws)
-
-	return &RPC{ip: rA.IP, rpc: rpc, ws: ws}, nil
+	return &RPC{ip: rA.IP, rpc: rpc}, nil
 }
 
 // Call calls the method on the server.
-func (c *RPC) Call(method string, args, reply interface{}) error {
-	if err := c.rpc.Call(method, args, reply); err != nil {
+func (c *RPC) Call(method string, args, reply any) error {
+	response, err := c.rpc.Call(context.Background(), method, args)
+	if err != nil {
 		return fmt.Errorf("could not call %s on %s: %w", method, c.ip, err)
 	}
 
-	return nil
-}
-
-// Close closes the connection.
-func (c *RPC) Close() error {
-	if err := c.rpc.Close(); err != nil {
-		return err
+	err = response.GetObject(&reply) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	if err != nil {
+		return fmt.Errorf("could not read response: %w", err)
 	}
 
-	return c.ws.Close()
+	return nil
 }

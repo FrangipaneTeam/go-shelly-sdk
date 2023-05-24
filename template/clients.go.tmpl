@@ -9,12 +9,17 @@ package shelly
 
 // {{ . | ToCamel }} is the client for the {{ . }}.
 type {{ . | ToCamel}}Client struct {
-	client *Client
+	client *APIClient
 }
 
 // {{ . | ToCamel }} returns a client for the {{ . }}.
-func (c *Client) {{ . | ToCamel }}() *{{ . | ToCamel }}Client {
+func (c *APIClient) {{ . | ToCamel }}() *{{ . | ToCamel }}Client {
 	return &{{ . | ToCamel }}Client{client: c}
+}
+
+// call calls the given method with the given args and reply.
+func (c *{{ . | ToCamel }}Client) call(method string, args, reply interface{}) error {
+	return c.client.client.rpc.Call(method, args, reply)
 }
 
 {{ end }}

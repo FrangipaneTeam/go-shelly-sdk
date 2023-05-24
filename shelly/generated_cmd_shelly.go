@@ -13,7 +13,7 @@ type ShellyListMethodsRequest struct {
 // ShellyListMethodsResponse is the response of ListMethods.
 type ShellyListMethodsResponse struct {
 	// Names of the methods allowed.
-	Methods map[string]string `json:"methods"`
+	Methods []string `json:"methods"`
 }
 
 // readResponse reads the response into the given interface.
@@ -28,7 +28,7 @@ func (r *ShellyListMethodsResponse) readResponse(reader *responseReader) error {
 func (c ShellyClient) ListMethods(args ShellyListMethodsRequest) (resp *ShellyListMethodsResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Shelly.ListMethods", args, &reader.Response); err != nil {
+	if err = c.call("Shelly.ListMethods", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -37,7 +37,7 @@ func (c ShellyClient) ListMethods(args ShellyListMethodsRequest) (resp *ShellyLi
 }
 
 // Getmethods returns the methods value.
-func (r *ShellyListMethodsResponse) GetMethods() map[string]string {
+func (r *ShellyListMethodsResponse) GetMethods() []string {
 	return r.Methods
 }
 
@@ -69,7 +69,7 @@ type ShellyGetDeviceInfoResponse struct {
 	// Shelly internal flags, present only when the ident parameter is set to true
 	FwSbits string `json:"fw_sbits"`
 	// Generation of the device.
-	Gen int `json:"gen"`
+	Gen float64 `json:"gen"`
 	// Id of the device.
 	Id string `json:"id"`
 	// Cloud key of the device (see note below), present only when the ident parameter is set to true
@@ -96,7 +96,7 @@ func (r *ShellyGetDeviceInfoResponse) readResponse(reader *responseReader) error
 func (c ShellyClient) GetDeviceInfo(args ShellyGetDeviceInfoRequest) (resp *ShellyGetDeviceInfoResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Shelly.GetDeviceInfo", args, &reader.Response); err != nil {
+	if err = c.call("Shelly.GetDeviceInfo", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -140,7 +140,7 @@ func (r *ShellyGetDeviceInfoResponse) GetFwSbits() string {
 }
 
 // Getgen returns the gen value.
-func (r *ShellyGetDeviceInfoResponse) GetGen() int {
+func (r *ShellyGetDeviceInfoResponse) GetGen() float64 {
 	return r.Gen
 }
 

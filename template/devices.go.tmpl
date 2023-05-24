@@ -1,0 +1,33 @@
+package shelly
+
+{{ $name := .Name }}
+
+type {{.Name}} struct {
+	client *Client
+}
+
+func (c *DevicesClient) {{.Name}}() *{{.Name}} {
+	return &{{.Name}}{client: c.client}
+}
+
+{{ range $k , $v := .Methods }}
+    /*
+    {{$k}} - {{$v}}
+    */
+
+    type {{$name}}{{$k}}Client struct {
+        client *{{$k}}Client
+    }
+
+    func (c *{{$name}}) {{$k}}() *{{$name}}{{$k}}Client {
+        return &{{$name}}{{$k}}Client{client: c.client.API().{{$k}}()}
+    }
+
+    {{ range $method := $v }}
+        func (c *{{$name}}{{$k}}Client) {{$method}}(args {{$k}}{{$method}}Request) (*{{$k}}{{$method}}Response, error) {
+            return c.client.{{$method}}(args)
+        }
+    {{ end }}
+
+{{ end }}
+

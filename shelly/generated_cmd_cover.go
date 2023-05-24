@@ -9,15 +9,15 @@ package shelly
 // CoverGetConfigRequest is the request of GetConfig.
 type CoverGetConfigRequest struct {
 	// Id of the Cover component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // CoverGetConfigResponse is the response of GetConfig.
 type CoverGetConfigResponse struct {
 	// Amperes, limit that must be exceeded to trigger an overcurrent error.
-	CurrentLimit int `json:"current_limit"`
+	CurrentLimit float64 `json:"current_limit"`
 	// Id of the Cover component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// Optional. One of single, dual or detached, only present if there is at least one input associated with the Cover instance. Single - Cover operation in both open and close directions is controlled via a single input. In this mode, only input_0 is used to open/close/stop the Cover. It doesn&#39;t matter if input_0 has in_type=switch or in_type=button, the behavior is the same: each switch toggle or button press cycles between open/stop/close/stop/... In single mode, input_1 is free to be used as a safety switch (e.g. end-of-motion limit switch, emergency-stop, etc.). dual - Cover operation is controlled via two inputs, one for open and one for close. In this mode, input_0 is used to open the Cover, input_1 is used to close the Cover.The exact behavior depends on the in_type of the inputs: if in_type = switch: toggle the switch to ON to move in the associated direction; toggle the switch to OFF to stop, if in_type = button: press the button to move in the associated direction; press the button again to stop. detached - Cover operation via the input/inputs is prohibited.
 	InMode string `json:"in_mode"`
 	// Defines Cover target state on power-on, one of open (Cover will fully open), closed (Cover will fully close) or stopped (Cover will not change its position).
@@ -25,9 +25,9 @@ type CoverGetConfigResponse struct {
 	// Defines the motor rotation for open and close directions (changing this parameter requires a reboot). false - On open motor rotates clockwise, on close motor rotates counter-clockwise. true - On open motor rotates counter-clockwise, on close motor rotates clockwise.
 	InvertDirections bool `json:"invert_directions"`
 	// Default timeout after which Cover will stop moving in close direction.
-	MaxtimeClose int `json:"maxtime_close"`
+	MaxtimeClose float64 `json:"maxtime_close"`
 	// Default timeout after which Cover will stop moving in open direction.
-	MaxtimeOpen int `json:"maxtime_open"`
+	MaxtimeOpen float64 `json:"maxtime_open"`
 	// configuration of the Cover motor. The exact contents depend on the type of motor used. The descriptions below are valid when an AC motor is used.
 	Motor CoverGetConfigResponseMotor `json:"motor"`
 	// Optional. Name of the cover instance.
@@ -35,23 +35,23 @@ type CoverGetConfigResponse struct {
 	// Defines the behavior of the obstruction detection safety feature.
 	ObstructionDetection CoverGetConfigResponseObstructionDetection `json:"obstruction_detection"`
 	// Watts, limit that must be exceeded to trigger an overpower error.
-	PowerLimit int `json:"power_limit"`
+	PowerLimit float64 `json:"power_limit"`
 	// Defines the behavior of the safety switch feature, only present if there are two inputs associated with the Cover instance. The safety_switch feature will only work when in_mode=single
 	SafetySwitch CoverGetConfigResponseSafetySwitch `json:"safety_switch"`
 	// Only present if there are two inputs associated with the Cover instance, defines whether the functions of the two inputs are swapped. The effect of swap_inputs is observable only when in_mode != detached. When swap_inputs is false: If in_mode = dual: input_0 is used to open, input_1 is used to close. If in_mode = single: input_0 is used to open/close/stop, input_1 is used as safety switch or is not used at all. When swap_inputs is true: If in_mode = dual: input_0 is used to close, input_1 is used to open. If in_mode = single: input_0 is used as safety switch or is not used at all, input_1 is used to open/close/stop.
 	SwapInputs bool `json:"swap_inputs"`
 	// Volts, limit that must be exceeded to trigger an undervoltage error.
-	UndervoltageLimit int `json:"undervoltage_limit"`
+	UndervoltageLimit float64 `json:"undervoltage_limit"`
 	// Volts, limit that must be exceeded to trigger an undervoltage error.
-	VoltageLimit int `json:"voltage_limit"`
+	VoltageLimit float64 `json:"voltage_limit"`
 }
 
 // CoverGetConfigResponseMotor is the response of CoverGetConfigResponseMotor.
 type CoverGetConfigResponseMotor struct {
 	// Seconds, minimum period of time in idle state before state is confirmed.
-	IdleConfirmPeriod int `json:"idle_confirm_period"`
+	IdleConfirmPeriod float64 `json:"idle_confirm_period"`
 	// Watts, threshold below which the motor is considered stopped.
-	IdlePowerThr int `json:"idle_power_thr"`
+	IdlePowerThr float64 `json:"idle_power_thr"`
 }
 
 // CoverGetConfigResponseObstructionDetection is the response of CoverGetConfigResponseObstructionDetection.
@@ -63,9 +63,9 @@ type CoverGetConfigResponseObstructionDetection struct {
 	// true when obstruction detection is enabled, false otherwise
 	Enable bool `json:"enable"`
 	// Seconds, time to wait after Cover starts moving before obstruction detection is activated (to avoid false detections because of the initial power consumption spike).
-	Holdoff int `json:"holdoff"`
+	Holdoff float64 `json:"holdoff"`
 	// Watts, power consumption above this threshold should be interpreted as objects obstructing Cover movement. This property is editable at any time, but note that during the cover calibration procedure (Cover.Calibrate), power_thr will be automatically set to the peak power consumption &#43; 15%, overwriting the current value. The automatic setup of power_thr during calibration will only start tracking power values when the holdoff time (see below) has elapsed.
-	PowerThr int `json:"power_thr"`
+	PowerThr float64 `json:"power_thr"`
 }
 
 // CoverGetConfigResponseSafetySwitch is the response of CoverGetConfigResponseSafetySwitch.
@@ -92,7 +92,7 @@ func (r *CoverGetConfigResponse) readResponse(reader *responseReader) error {
 func (c CoverClient) GetConfig(args CoverGetConfigRequest) (resp *CoverGetConfigResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Cover.GetConfig", args, &reader.Response); err != nil {
+	if err = c.call("Cover.GetConfig", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -101,12 +101,12 @@ func (c CoverClient) GetConfig(args CoverGetConfigRequest) (resp *CoverGetConfig
 }
 
 // Getcurrent_limit returns the current_limit value.
-func (r *CoverGetConfigResponse) GetCurrentLimit() int {
+func (r *CoverGetConfigResponse) GetCurrentLimit() float64 {
 	return r.CurrentLimit
 }
 
 // Getid returns the id value.
-func (r *CoverGetConfigResponse) GetId() string {
+func (r *CoverGetConfigResponse) GetId() float64 {
 	return r.Id
 }
 
@@ -126,12 +126,12 @@ func (r *CoverGetConfigResponse) GetInvertDirections() bool {
 }
 
 // Getmaxtime_close returns the maxtime_close value.
-func (r *CoverGetConfigResponse) GetMaxtimeClose() int {
+func (r *CoverGetConfigResponse) GetMaxtimeClose() float64 {
 	return r.MaxtimeClose
 }
 
 // Getmaxtime_open returns the maxtime_open value.
-func (r *CoverGetConfigResponse) GetMaxtimeOpen() int {
+func (r *CoverGetConfigResponse) GetMaxtimeOpen() float64 {
 	return r.MaxtimeOpen
 }
 
@@ -151,7 +151,7 @@ func (r *CoverGetConfigResponse) GetObstructionDetection() CoverGetConfigRespons
 }
 
 // Getpower_limit returns the power_limit value.
-func (r *CoverGetConfigResponse) GetPowerLimit() int {
+func (r *CoverGetConfigResponse) GetPowerLimit() float64 {
 	return r.PowerLimit
 }
 
@@ -166,22 +166,22 @@ func (r *CoverGetConfigResponse) GetSwapInputs() bool {
 }
 
 // Getundervoltage_limit returns the undervoltage_limit value.
-func (r *CoverGetConfigResponse) GetUndervoltageLimit() int {
+func (r *CoverGetConfigResponse) GetUndervoltageLimit() float64 {
 	return r.UndervoltageLimit
 }
 
 // Getvoltage_limit returns the voltage_limit value.
-func (r *CoverGetConfigResponse) GetVoltageLimit() int {
+func (r *CoverGetConfigResponse) GetVoltageLimit() float64 {
 	return r.VoltageLimit
 }
 
 // GetIdleConfirmPeriod returns the idle_confirm_period value.
-func (r *CoverGetConfigResponseMotor) GetIdleConfirmPeriod() int {
+func (r *CoverGetConfigResponseMotor) GetIdleConfirmPeriod() float64 {
 	return r.IdleConfirmPeriod
 }
 
 // GetIdlePowerThr returns the idle_power_thr value.
-func (r *CoverGetConfigResponseMotor) GetIdlePowerThr() int {
+func (r *CoverGetConfigResponseMotor) GetIdlePowerThr() float64 {
 	return r.IdlePowerThr
 }
 
@@ -201,12 +201,12 @@ func (r *CoverGetConfigResponseObstructionDetection) GetEnable() bool {
 }
 
 // GetHoldoff returns the holdoff value.
-func (r *CoverGetConfigResponseObstructionDetection) GetHoldoff() int {
+func (r *CoverGetConfigResponseObstructionDetection) GetHoldoff() float64 {
 	return r.Holdoff
 }
 
 // GetPowerThr returns the power_thr value.
-func (r *CoverGetConfigResponseObstructionDetection) GetPowerThr() int {
+func (r *CoverGetConfigResponseObstructionDetection) GetPowerThr() float64 {
 	return r.PowerThr
 }
 
@@ -240,15 +240,15 @@ type CoverSetConfigRequest struct {
 	// The configuration to apply to the Cover instance.
 	Config CoverSetConfigRequestConfig `json:"config"`
 	// The ID of the Cover instance to configure.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // Extra CoverSetConfigRequestConfig is the request of CoverSetConfigRequestConfig.
 type CoverSetConfigRequestConfig struct {
 	// Amperes, limit that must be exceeded to trigger an overcurrent error.
-	CurrentLimit int `json:"current_limit"`
+	CurrentLimit float64 `json:"current_limit"`
 	// Id of the Cover component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// Optional. One of single, dual or detached, only present if there is at least one input associated with the Cover instance. Single - Cover operation in both open and close directions is controlled via a single input. In this mode, only input_0 is used to open/close/stop the Cover. It doesn&#39;t matter if input_0 has in_type=switch or in_type=button, the behavior is the same: each switch toggle or button press cycles between open/stop/close/stop/... In single mode, input_1 is free to be used as a safety switch (e.g. end-of-motion limit switch, emergency-stop, etc.). dual - Cover operation is controlled via two inputs, one for open and one for close. In this mode, input_0 is used to open the Cover, input_1 is used to close the Cover.The exact behavior depends on the in_type of the inputs: if in_type = switch: toggle the switch to ON to move in the associated direction; toggle the switch to OFF to stop, if in_type = button: press the button to move in the associated direction; press the button again to stop. detached - Cover operation via the input/inputs is prohibited.
 	InMode string `json:"in_mode"`
 	// Defines Cover target state on power-on, one of open (Cover will fully open), closed (Cover will fully close) or stopped (Cover will not change its position).
@@ -256,9 +256,9 @@ type CoverSetConfigRequestConfig struct {
 	// Defines the motor rotation for open and close directions (changing this parameter requires a reboot). false - On open motor rotates clockwise, on close motor rotates counter-clockwise. true - On open motor rotates counter-clockwise, on close motor rotates clockwise.
 	InvertDirections bool `json:"invert_directions"`
 	// Default timeout after which Cover will stop moving in close direction.
-	MaxtimeClose int `json:"maxtime_close"`
+	MaxtimeClose float64 `json:"maxtime_close"`
 	// Default timeout after which Cover will stop moving in open direction.
-	MaxtimeOpen int `json:"maxtime_open"`
+	MaxtimeOpen float64 `json:"maxtime_open"`
 	// configuration of the Cover motor. The exact contents depend on the type of motor used. The descriptions below are valid when an AC motor is used.
 	Motor CoverSetConfigRequestConfigMotor `json:"motor"`
 	// Optional. Name of the cover instance.
@@ -266,23 +266,23 @@ type CoverSetConfigRequestConfig struct {
 	// Defines the behavior of the obstruction detection safety feature.
 	ObstructionDetection CoverSetConfigRequestConfigObstructionDetection `json:"obstruction_detection"`
 	// Watts, limit that must be exceeded to trigger an overpower error.
-	PowerLimit int `json:"power_limit"`
+	PowerLimit float64 `json:"power_limit"`
 	// Defines the behavior of the safety switch feature, only present if there are two inputs associated with the Cover instance. The safety_switch feature will only work when in_mode=single
 	SafetySwitch CoverSetConfigRequestConfigSafetySwitch `json:"safety_switch"`
 	// Only present if there are two inputs associated with the Cover instance, defines whether the functions of the two inputs are swapped. The effect of swap_inputs is observable only when in_mode != detached. When swap_inputs is false: If in_mode = dual: input_0 is used to open, input_1 is used to close. If in_mode = single: input_0 is used to open/close/stop, input_1 is used as safety switch or is not used at all. When swap_inputs is true: If in_mode = dual: input_0 is used to close, input_1 is used to open. If in_mode = single: input_0 is used as safety switch or is not used at all, input_1 is used to open/close/stop.
 	SwapInputs bool `json:"swap_inputs"`
 	// Volts, limit that must be exceeded to trigger an undervoltage error.
-	UndervoltageLimit int `json:"undervoltage_limit"`
+	UndervoltageLimit float64 `json:"undervoltage_limit"`
 	// Volts, limit that must be exceeded to trigger an undervoltage error.
-	VoltageLimit int `json:"voltage_limit"`
+	VoltageLimit float64 `json:"voltage_limit"`
 }
 
 // Extra CoverSetConfigRequestConfigMotor is the request of CoverSetConfigRequestConfigMotor.
 type CoverSetConfigRequestConfigMotor struct {
 	// Seconds, minimum period of time in idle state before state is confirmed.
-	IdleConfirmPeriod int `json:"idle_confirm_period"`
+	IdleConfirmPeriod float64 `json:"idle_confirm_period"`
 	// Watts, threshold below which the motor is considered stopped.
-	IdlePowerThr int `json:"idle_power_thr"`
+	IdlePowerThr float64 `json:"idle_power_thr"`
 }
 
 // Extra CoverSetConfigRequestConfigObstructionDetection is the request of CoverSetConfigRequestConfigObstructionDetection.
@@ -294,9 +294,9 @@ type CoverSetConfigRequestConfigObstructionDetection struct {
 	// true when obstruction detection is enabled, false otherwise
 	Enable bool `json:"enable"`
 	// Seconds, time to wait after Cover starts moving before obstruction detection is activated (to avoid false detections because of the initial power consumption spike).
-	Holdoff int `json:"holdoff"`
+	Holdoff float64 `json:"holdoff"`
 	// Watts, power consumption above this threshold should be interpreted as objects obstructing Cover movement. This property is editable at any time, but note that during the cover calibration procedure (Cover.Calibrate), power_thr will be automatically set to the peak power consumption &#43; 15%, overwriting the current value. The automatic setup of power_thr during calibration will only start tracking power values when the holdoff time (see below) has elapsed.
-	PowerThr int `json:"power_thr"`
+	PowerThr float64 `json:"power_thr"`
 }
 
 // Extra CoverSetConfigRequestConfigSafetySwitch is the request of CoverSetConfigRequestConfigSafetySwitch.
@@ -327,7 +327,7 @@ func (r *CoverSetConfigResponse) readResponse(reader *responseReader) error {
 func (c CoverClient) SetConfig(args CoverSetConfigRequest) (resp *CoverSetConfigResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Cover.SetConfig", args, &reader.Response); err != nil {
+	if err = c.call("Cover.SetConfig", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -343,7 +343,7 @@ func (c CoverClient) SetConfig(args CoverSetConfigRequest) (resp *CoverSetConfig
 // CoverGetStatusRequest is the request of GetStatus.
 type CoverGetStatusRequest struct {
 	// The numeric ID of the Cover component instance
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // CoverGetStatusResponse is the response of GetStatus.
@@ -351,21 +351,21 @@ type CoverGetStatusResponse struct {
 	// Optional. Information about the active energy counter (shown if applicable)
 	Aenergy CoverGetStatusResponseAenergy `json:"aenergy,omitempty"`
 	// Active power in Watts
-	Apower int `json:"apower"`
+	Apower float64 `json:"apower"`
 	// Current in Amperes
-	Current int `json:"current"`
+	Current float64 `json:"current"`
 	// Only present if Cover is calibrated. Represents current position in percent from 0 (fully closed) to 100 (fully open); null if position is unknown
-	CurrentPos int `json:"current_pos"`
+	CurrentPos float64 `json:"current_pos"`
 	// Only present if an error condition has occurred
 	Errors []string `json:"errors"`
 	// The numeric ID of the Cover component instance
-	Id int `json:"id"`
+	Id float64 `json:"id"`
 	// Only present if Cover is actively moving in either open or close directions. Represents the time at which the movement has begun
-	MoveStartedAt int `json:"move_started_at"`
+	MoveStartedAt float64 `json:"move_started_at"`
 	// Seconds, only present if Cover is actively moving in either open or close directions. Cover will automatically stop after the timeout expires
-	MoveTimeout int `json:"move_timeout"`
+	MoveTimeout float64 `json:"move_timeout"`
 	// Power factor
-	Pf int `json:"pf"`
+	Pf float64 `json:"pf"`
 	// False if Cover is not calibrated and only discrete open/close is possible; true if Cover is calibrated and can be commanded to go to arbitrary positions between fully open and fully closed
 	PosControl bool `json:"pos_control"`
 	// Source of the last command
@@ -373,11 +373,11 @@ type CoverGetStatusResponse struct {
 	// One of open (Cover is fully open), closed (Cover is fully closed), opening (Cover is actively opening), closing (Cover is actively closing), stopped (Cover is not moving, and is neither fully open nor fully closed, or the open/close state is unknown), calibrating (Cover is performing a calibration procedure)
 	State string `json:"state"`
 	// Only present if Cover is calibrated and is actively moving to a requested position in either open or close directions. Represents the target position in percent from 0 (fully closed) to 100 (fully open); null if target position has been reached or the movement was cancelled
-	TargetPos int `json:"target_pos"`
+	TargetPos float64 `json:"target_pos"`
 	// Temperature sensor information, only present if a temperature monitor is associated with the Cover instance
 	Temperature CoverGetStatusResponseTemperature `json:"temperature"`
 	// Voltage in Volts
-	Voltage int `json:"voltage"`
+	Voltage float64 `json:"voltage"`
 }
 
 // CoverGetStatusResponseAenergy is the response of CoverGetStatusResponseAenergy.
@@ -385,17 +385,17 @@ type CoverGetStatusResponseAenergy struct {
 	// Energy consumption by minute (in Milliwatt-hours) for the last three minutes (the lower the index of the element in the array, the closer to the current moment the minute)
 	ByMinute []int `json:"by_minute"`
 	// Unix timestamp of the first second of the last minute (in UTC)
-	MinuteTs int `json:"minute_ts"`
+	MinuteTs float64 `json:"minute_ts"`
 	// Total energy consumed in Watt-hours
-	Total int `json:"total"`
+	Total float64 `json:"total"`
 }
 
 // CoverGetStatusResponseTemperature is the response of CoverGetStatusResponseTemperature.
 type CoverGetStatusResponseTemperature struct {
 	// Temperature in Celsius (null if temperature is out of the measurement range)
-	TC int `json:"tc"`
+	TC float64 `json:"tc"`
 	// Temperature in Fahrenheit (null if temperature is out of the measurement range)
-	TF int `json:"tf"`
+	TF float64 `json:"tf"`
 }
 
 // readResponse reads the response into the given interface.
@@ -410,7 +410,7 @@ func (r *CoverGetStatusResponse) readResponse(reader *responseReader) error {
 func (c CoverClient) GetStatus(args CoverGetStatusRequest) (resp *CoverGetStatusResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Cover.GetStatus", args, &reader.Response); err != nil {
+	if err = c.call("Cover.GetStatus", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -424,17 +424,17 @@ func (r *CoverGetStatusResponse) GetAenergy() CoverGetStatusResponseAenergy {
 }
 
 // Getapower returns the apower value.
-func (r *CoverGetStatusResponse) GetApower() int {
+func (r *CoverGetStatusResponse) GetApower() float64 {
 	return r.Apower
 }
 
 // Getcurrent returns the current value.
-func (r *CoverGetStatusResponse) GetCurrent() int {
+func (r *CoverGetStatusResponse) GetCurrent() float64 {
 	return r.Current
 }
 
 // Getcurrent_pos returns the current_pos value.
-func (r *CoverGetStatusResponse) GetCurrentPos() int {
+func (r *CoverGetStatusResponse) GetCurrentPos() float64 {
 	return r.CurrentPos
 }
 
@@ -444,22 +444,22 @@ func (r *CoverGetStatusResponse) GetErrors() []string {
 }
 
 // Getid returns the id value.
-func (r *CoverGetStatusResponse) GetId() int {
+func (r *CoverGetStatusResponse) GetId() float64 {
 	return r.Id
 }
 
 // Getmove_started_at returns the move_started_at value.
-func (r *CoverGetStatusResponse) GetMoveStartedAt() int {
+func (r *CoverGetStatusResponse) GetMoveStartedAt() float64 {
 	return r.MoveStartedAt
 }
 
 // Getmove_timeout returns the move_timeout value.
-func (r *CoverGetStatusResponse) GetMoveTimeout() int {
+func (r *CoverGetStatusResponse) GetMoveTimeout() float64 {
 	return r.MoveTimeout
 }
 
 // Getpf returns the pf value.
-func (r *CoverGetStatusResponse) GetPf() int {
+func (r *CoverGetStatusResponse) GetPf() float64 {
 	return r.Pf
 }
 
@@ -479,7 +479,7 @@ func (r *CoverGetStatusResponse) GetState() string {
 }
 
 // Gettarget_pos returns the target_pos value.
-func (r *CoverGetStatusResponse) GetTargetPos() int {
+func (r *CoverGetStatusResponse) GetTargetPos() float64 {
 	return r.TargetPos
 }
 
@@ -489,7 +489,7 @@ func (r *CoverGetStatusResponse) GetTemperature() CoverGetStatusResponseTemperat
 }
 
 // Getvoltage returns the voltage value.
-func (r *CoverGetStatusResponse) GetVoltage() int {
+func (r *CoverGetStatusResponse) GetVoltage() float64 {
 	return r.Voltage
 }
 
@@ -499,22 +499,22 @@ func (r *CoverGetStatusResponseAenergy) GetByMinute() []int {
 }
 
 // GetMinuteTs returns the minute_ts value.
-func (r *CoverGetStatusResponseAenergy) GetMinuteTs() int {
+func (r *CoverGetStatusResponseAenergy) GetMinuteTs() float64 {
 	return r.MinuteTs
 }
 
 // GetTotal returns the total value.
-func (r *CoverGetStatusResponseAenergy) GetTotal() int {
+func (r *CoverGetStatusResponseAenergy) GetTotal() float64 {
 	return r.Total
 }
 
 // GetTC returns the tC value.
-func (r *CoverGetStatusResponseTemperature) GetTC() int {
+func (r *CoverGetStatusResponseTemperature) GetTC() float64 {
 	return r.TC
 }
 
 // GetTF returns the tF value.
-func (r *CoverGetStatusResponseTemperature) GetTF() int {
+func (r *CoverGetStatusResponseTemperature) GetTF() float64 {
 	return r.TF
 }
 
@@ -526,9 +526,9 @@ func (r *CoverGetStatusResponseTemperature) GetTF() int {
 // CoverOpenRequest is the request of Open.
 type CoverOpenRequest struct {
 	// Optional. If duration is not provided, Cover will fully open, unless it times out because of maxtime_open first. If duration (seconds) is provided, Cover will move in open direction for the specified time. duration must be in range [0.1..maxtime_open]
-	Duration int `json:"duration"`
+	Duration float64 `json:"duration"`
 	// The numeric ID of the Cover component instance
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // CoverOpenResponse is the response of Open.
@@ -547,7 +547,7 @@ func (r *CoverOpenResponse) readResponse(reader *responseReader) error {
 func (c CoverClient) Open(args CoverOpenRequest) (resp *CoverOpenResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Cover.Open", args, &reader.Response); err != nil {
+	if err = c.call("Cover.Open", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -563,7 +563,7 @@ func (c CoverClient) Open(args CoverOpenRequest) (resp *CoverOpenResponse, err e
 // CoverCloseRequest is the request of Close.
 type CoverCloseRequest struct {
 	// The numeric ID of the Cover component instance
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // CoverCloseResponse is the response of Close.
@@ -582,7 +582,7 @@ func (r *CoverCloseResponse) readResponse(reader *responseReader) error {
 func (c CoverClient) Close(args CoverCloseRequest) (resp *CoverCloseResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Cover.Close", args, &reader.Response); err != nil {
+	if err = c.call("Cover.Close", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -598,11 +598,11 @@ func (c CoverClient) Close(args CoverCloseRequest) (resp *CoverCloseResponse, er
 // CoverGoToPositionRequest is the request of GoToPosition.
 type CoverGoToPositionRequest struct {
 	// The numeric ID of the Cover component instance
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// Required and mutually exclusive (at least one of them pos/rel be provided, but not both at the same time). pos represents target position in %, allowed range [0..100]. If rel is provided, Cover will move to a target_position = current_position &#43; rel. If the value of rel is so big that it results in overshoot (i.e. target_position is beyond fully open / fully closed), target_position will be silently capped to fully open / fully closed
-	Pos int `json:"pos"`
+	Pos float64 `json:"pos"`
 	// Required and mutually exclusive (at least one of them pos/rel be provided, but not both at the same time). rel represents relative move in %, allowed range [-100..100]
-	Rel int `json:"rel"`
+	Rel float64 `json:"rel"`
 }
 
 // CoverGoToPositionResponse is the response of GoToPosition.
@@ -621,7 +621,7 @@ func (r *CoverGoToPositionResponse) readResponse(reader *responseReader) error {
 func (c CoverClient) GoToPosition(args CoverGoToPositionRequest) (resp *CoverGoToPositionResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Cover.GoToPosition", args, &reader.Response); err != nil {
+	if err = c.call("Cover.GoToPosition", args, &reader.Response); err != nil {
 		return
 	}
 

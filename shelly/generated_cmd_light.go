@@ -9,7 +9,7 @@ package shelly
 // LightGetConfigRequest is the request of GetConfig.
 type LightGetConfigRequest struct {
 	// Id of the Light component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // LightGetConfigResponse is the response of GetConfig.
@@ -17,15 +17,15 @@ type LightGetConfigResponse struct {
 	// True if the &#34;Automatic OFF&#34; function is enabled, false otherwise
 	AutoOff bool `json:"auto_off"`
 	// Seconds to pass until the component is switched back off
-	AutoOffDelay int `json:"auto_off_delay"`
+	AutoOffDelay float64 `json:"auto_off_delay"`
 	// True if the &#34;Automatic ON&#34; function is enabled, false otherwise
 	AutoOn bool `json:"auto_on"`
 	// Seconds to pass until the component is switched back on
-	AutoOnDelay int `json:"auto_on_delay"`
+	AutoOnDelay float64 `json:"auto_on_delay"`
 	// Optional. Brightness level (in percent) after power on
-	DefaultBrightness int `json:"default.brightness"`
+	DefaultBrightness float64 `json:"default.brightness"`
 	// Id of the Light component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// Output state to set on power_on. Range of values: off, on, restore_last
 	InitialState string `json:"initial_state"`
 	// Optional. Name of the light instance.
@@ -33,7 +33,7 @@ type LightGetConfigResponse struct {
 	// Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros.
 	NightModeActiveBetween []string `json:"night_mode.active_between"`
 	// Brightness level limit when night mode is active
-	NightModeBrightness int `json:"night_mode.brightness"`
+	NightModeBrightness float64 `json:"night_mode.brightness"`
 	// Enable or disable night mode
 	NightModeEnable bool `json:"night_mode.enable"`
 }
@@ -50,7 +50,7 @@ func (r *LightGetConfigResponse) readResponse(reader *responseReader) error {
 func (c LightClient) GetConfig(args LightGetConfigRequest) (resp *LightGetConfigResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Light.GetConfig", args, &reader.Response); err != nil {
+	if err = c.call("Light.GetConfig", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -64,7 +64,7 @@ func (r *LightGetConfigResponse) GetAutoOff() bool {
 }
 
 // Getauto_off_delay returns the auto_off_delay value.
-func (r *LightGetConfigResponse) GetAutoOffDelay() int {
+func (r *LightGetConfigResponse) GetAutoOffDelay() float64 {
 	return r.AutoOffDelay
 }
 
@@ -74,17 +74,17 @@ func (r *LightGetConfigResponse) GetAutoOn() bool {
 }
 
 // Getauto_on_delay returns the auto_on_delay value.
-func (r *LightGetConfigResponse) GetAutoOnDelay() int {
+func (r *LightGetConfigResponse) GetAutoOnDelay() float64 {
 	return r.AutoOnDelay
 }
 
 // Getdefault.brightness returns the default.brightness value.
-func (r *LightGetConfigResponse) GetDefaultBrightness() int {
+func (r *LightGetConfigResponse) GetDefaultBrightness() float64 {
 	return r.DefaultBrightness
 }
 
 // Getid returns the id value.
-func (r *LightGetConfigResponse) GetId() string {
+func (r *LightGetConfigResponse) GetId() float64 {
 	return r.Id
 }
 
@@ -104,7 +104,7 @@ func (r *LightGetConfigResponse) GetNightModeActiveBetween() []string {
 }
 
 // Getnight_mode.brightness returns the night_mode.brightness value.
-func (r *LightGetConfigResponse) GetNightModeBrightness() int {
+func (r *LightGetConfigResponse) GetNightModeBrightness() float64 {
 	return r.NightModeBrightness
 }
 
@@ -121,23 +121,23 @@ func (r *LightGetConfigResponse) GetNightModeEnable() bool {
 // LightGetStatusRequest is the request of GetStatus.
 type LightGetStatusRequest struct {
 	// Id of the Light component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // LightGetStatusResponse is the response of GetStatus.
 type LightGetStatusResponse struct {
 	// Brightness level (in percent)
-	Brightness int `json:"brightness"`
+	Brightness float64 `json:"brightness"`
 	// Id of the Light component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// true if the output channel is currently on, false otherwise
 	Output bool `json:"output"`
 	// Source of the last command, for example: init, WS_in, http, ...
 	Source string `json:"source"`
 	// Optional. Duration of the timer in seconds (shown if the timer is triggered)
-	TimerDuration int `json:"timer_duration"`
+	TimerDuration float64 `json:"timer_duration"`
 	// Optional. Unix timestamp, start time of the timer (in UTC) (shown if the timer is triggered)
-	TimerStartedAt int `json:"timer_started_at"`
+	TimerStartedAt float64 `json:"timer_started_at"`
 }
 
 // readResponse reads the response into the given interface.
@@ -152,7 +152,7 @@ func (r *LightGetStatusResponse) readResponse(reader *responseReader) error {
 func (c LightClient) GetStatus(args LightGetStatusRequest) (resp *LightGetStatusResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Light.GetStatus", args, &reader.Response); err != nil {
+	if err = c.call("Light.GetStatus", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -161,12 +161,12 @@ func (c LightClient) GetStatus(args LightGetStatusRequest) (resp *LightGetStatus
 }
 
 // Getbrightness returns the brightness value.
-func (r *LightGetStatusResponse) GetBrightness() int {
+func (r *LightGetStatusResponse) GetBrightness() float64 {
 	return r.Brightness
 }
 
 // Getid returns the id value.
-func (r *LightGetStatusResponse) GetId() string {
+func (r *LightGetStatusResponse) GetId() float64 {
 	return r.Id
 }
 
@@ -181,12 +181,12 @@ func (r *LightGetStatusResponse) GetSource() string {
 }
 
 // Gettimer_duration returns the timer_duration value.
-func (r *LightGetStatusResponse) GetTimerDuration() int {
+func (r *LightGetStatusResponse) GetTimerDuration() float64 {
 	return r.TimerDuration
 }
 
 // Gettimer_started_at returns the timer_started_at value.
-func (r *LightGetStatusResponse) GetTimerStartedAt() int {
+func (r *LightGetStatusResponse) GetTimerStartedAt() float64 {
 	return r.TimerStartedAt
 }
 
@@ -200,7 +200,7 @@ type LightSetConfigRequest struct {
 	// Optional. Configuration that the method takes.
 	Config LightSetConfigRequestConfig `json:"config,omitempty"`
 	// Id of the Light component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // Extra LightSetConfigRequestConfig is the request of LightSetConfigRequestConfig.
@@ -208,15 +208,15 @@ type LightSetConfigRequestConfig struct {
 	// True if the &#34;Automatic OFF&#34; function is enabled, false otherwise
 	AutoOff bool `json:"auto_off"`
 	// Seconds to pass until the component is switched back off
-	AutoOffDelay int `json:"auto_off_delay"`
+	AutoOffDelay float64 `json:"auto_off_delay"`
 	// True if the &#34;Automatic ON&#34; function is enabled, false otherwise
 	AutoOn bool `json:"auto_on"`
 	// Seconds to pass until the component is switched back on
-	AutoOnDelay int `json:"auto_on_delay"`
+	AutoOnDelay float64 `json:"auto_on_delay"`
 	// Optional. Brightness level (in percent) after power on
-	DefaultBrightness int `json:"default.brightness"`
+	DefaultBrightness float64 `json:"default.brightness"`
 	// Id of the Light component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// Output state to set on power_on. Range of values: off, on, restore_last
 	InitialState string `json:"initial_state"`
 	// Optional. Name of the light instance.
@@ -224,7 +224,7 @@ type LightSetConfigRequestConfig struct {
 	// Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros.
 	NightModeActiveBetween []string `json:"night_mode.active_between"`
 	// Brightness level limit when night mode is active
-	NightModeBrightness int `json:"night_mode.brightness"`
+	NightModeBrightness float64 `json:"night_mode.brightness"`
 	// Enable or disable night mode
 	NightModeEnable bool `json:"night_mode.enable"`
 }
@@ -245,7 +245,7 @@ func (r *LightSetConfigResponse) readResponse(reader *responseReader) error {
 func (c LightClient) SetConfig(args LightSetConfigRequest) (resp *LightSetConfigResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Light.SetConfig", args, &reader.Response); err != nil {
+	if err = c.call("Light.SetConfig", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -261,13 +261,13 @@ func (c LightClient) SetConfig(args LightSetConfigRequest) (resp *LightSetConfig
 // LightSetRequest is the request of Set.
 type LightSetRequest struct {
 	// Optional. Brightness level (in percent)
-	Brightness int `json:"brightness"`
+	Brightness float64 `json:"brightness"`
 	// Id of the Light component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// Optional. True for light on, false otherwise.
 	On bool `json:"on"`
 	// Optional. Optional flip-back timer in seconds.
-	ToggleAfter int `json:"toggle_after"`
+	ToggleAfter float64 `json:"toggle_after"`
 }
 
 // LightSetResponse is the response of Set.
@@ -286,7 +286,7 @@ func (r *LightSetResponse) readResponse(reader *responseReader) error {
 func (c LightClient) Set(args LightSetRequest) (resp *LightSetResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Light.Set", args, &reader.Response); err != nil {
+	if err = c.call("Light.Set", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -302,7 +302,7 @@ func (c LightClient) Set(args LightSetRequest) (resp *LightSetResponse, err erro
 // LightToggleRequest is the request of Toggle.
 type LightToggleRequest struct {
 	// Id of the Light component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // LightToggleResponse is the response of Toggle.
@@ -321,7 +321,7 @@ func (r *LightToggleResponse) readResponse(reader *responseReader) error {
 func (c LightClient) Toggle(args LightToggleRequest) (resp *LightToggleResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Light.Toggle", args, &reader.Response); err != nil {
+	if err = c.call("Light.Toggle", args, &reader.Response); err != nil {
 		return
 	}
 

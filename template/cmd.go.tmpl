@@ -84,7 +84,7 @@ func (r *{{ .Category }}{{ .Name }}Response) readResponse(reader *responseReader
 func (c {{ .Category }}Client) {{ .Name }}(args {{ .Category }}{{ .Name }}Request) (resp *{{ .Category }}{{ .Name }}Response, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("{{ .Category }}.{{ .Name }}", args, &reader.Response); err != nil {
+	if err = c.call("{{ .Category }}.{{ .Name }}", args, &reader.Response); err != nil {
 		return
 	}
 
