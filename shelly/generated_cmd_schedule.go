@@ -40,7 +40,7 @@ func (r *ScheduleCreateResponse) readResponse(reader *responseReader) error {
 func (c ScheduleClient) Create(args ScheduleCreateRequest) (resp *ScheduleCreateResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Schedule.Create", args, &reader.Response); err != nil {
+	if err = c.call("Schedule.Create", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -60,7 +60,7 @@ type ScheduleUpdateRequest struct {
 	// true to enable the execution of this job, false otherwise. It is true by default.
 	Enable bool `json:"enable"`
 	// The numeric ID of the Schedule component instance
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// As defined by cron. Note that leading 0s are not supported (e.g.: for 8 AM you should set 8 instead of 08).
 	Timespec string `json:"timespec"`
 }
@@ -76,7 +76,7 @@ type ScheduleUpdateRequestCalls struct {
 // ScheduleUpdateResponse is the response of Update.
 type ScheduleUpdateResponse struct {
 	// Current revision number of the schedule instances
-	Rev int `json:"rev"`
+	Rev float64 `json:"rev"`
 }
 
 // readResponse reads the response into the given interface.
@@ -91,7 +91,7 @@ func (r *ScheduleUpdateResponse) readResponse(reader *responseReader) error {
 func (c ScheduleClient) Update(args ScheduleUpdateRequest) (resp *ScheduleUpdateResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Schedule.Update", args, &reader.Response); err != nil {
+	if err = c.call("Schedule.Update", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -100,7 +100,7 @@ func (c ScheduleClient) Update(args ScheduleUpdateRequest) (resp *ScheduleUpdate
 }
 
 // Getrev returns the rev value.
-func (r *ScheduleUpdateResponse) GetRev() int {
+func (r *ScheduleUpdateResponse) GetRev() float64 {
 	return r.Rev
 }
 
@@ -118,7 +118,7 @@ type ScheduleListResponse struct {
 	// Each entry is a schedule job object
 	Jobs []ScheduleListResponseJobs `json:"jobs"`
 	// Current revision number of the schedule instances
-	Rev int `json:"rev"`
+	Rev float64 `json:"rev"`
 }
 
 // ScheduleListResponseJobs is the response of ScheduleListResponseJobs.
@@ -128,7 +128,7 @@ type ScheduleListResponseJobs struct {
 	// true to enable the execution of this job, false otherwise. It is true by default.
 	Enable bool `json:"enable"`
 	// The numeric ID of the Schedule component instance
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// As defined by cron. Note that leading 0s are not supported (e.g.: for 8 AM you should set 8 instead of 08).
 	Timespec string `json:"timespec"`
 }
@@ -153,7 +153,7 @@ func (r *ScheduleListResponse) readResponse(reader *responseReader) error {
 func (c ScheduleClient) List(args ScheduleListRequest) (resp *ScheduleListResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Schedule.List", args, &reader.Response); err != nil {
+	if err = c.call("Schedule.List", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -167,7 +167,7 @@ func (r *ScheduleListResponse) GetJobs() []ScheduleListResponseJobs {
 }
 
 // Getrev returns the rev value.
-func (r *ScheduleListResponse) GetRev() int {
+func (r *ScheduleListResponse) GetRev() float64 {
 	return r.Rev
 }
 
@@ -182,7 +182,7 @@ func (r *ScheduleListResponseJobs) GetEnable() bool {
 }
 
 // GetId returns the id value.
-func (r *ScheduleListResponseJobs) GetId() string {
+func (r *ScheduleListResponseJobs) GetId() float64 {
 	return r.Id
 }
 
@@ -209,13 +209,13 @@ func (r *ScheduleListResponseJobsCalls) GetParams() interface{} {
 // ScheduleDeleteRequest is the request of Delete.
 type ScheduleDeleteRequest struct {
 	// The numeric ID of the Schedule component instance
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // ScheduleDeleteResponse is the response of Delete.
 type ScheduleDeleteResponse struct {
 	// Current revision number of the schedule instances
-	Rev int `json:"rev"`
+	Rev float64 `json:"rev"`
 }
 
 // readResponse reads the response into the given interface.
@@ -230,7 +230,7 @@ func (r *ScheduleDeleteResponse) readResponse(reader *responseReader) error {
 func (c ScheduleClient) Delete(args ScheduleDeleteRequest) (resp *ScheduleDeleteResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Schedule.Delete", args, &reader.Response); err != nil {
+	if err = c.call("Schedule.Delete", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -239,7 +239,7 @@ func (c ScheduleClient) Delete(args ScheduleDeleteRequest) (resp *ScheduleDelete
 }
 
 // Getrev returns the rev value.
-func (r *ScheduleDeleteResponse) GetRev() int {
+func (r *ScheduleDeleteResponse) GetRev() float64 {
 	return r.Rev
 }
 
@@ -255,7 +255,7 @@ type ScheduleDeleteAllRequest struct {
 // ScheduleDeleteAllResponse is the response of DeleteAll.
 type ScheduleDeleteAllResponse struct {
 	// Current revision number of the schedule instances
-	Rev int `json:"rev"`
+	Rev float64 `json:"rev"`
 }
 
 // readResponse reads the response into the given interface.
@@ -270,7 +270,7 @@ func (r *ScheduleDeleteAllResponse) readResponse(reader *responseReader) error {
 func (c ScheduleClient) DeleteAll(args ScheduleDeleteAllRequest) (resp *ScheduleDeleteAllResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Schedule.DeleteAll", args, &reader.Response); err != nil {
+	if err = c.call("Schedule.DeleteAll", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -279,6 +279,6 @@ func (c ScheduleClient) DeleteAll(args ScheduleDeleteAllRequest) (resp *Schedule
 }
 
 // Getrev returns the rev value.
-func (r *ScheduleDeleteAllResponse) GetRev() int {
+func (r *ScheduleDeleteAllResponse) GetRev() float64 {
 	return r.Rev
 }

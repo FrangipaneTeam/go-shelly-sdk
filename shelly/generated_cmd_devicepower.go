@@ -9,7 +9,7 @@ package shelly
 // DevicePowerGetStatusRequest is the request of GetStatus.
 type DevicePowerGetStatusRequest struct {
 	// Id of the DevicePower component instance
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // DevicePowerGetStatusResponse is the response of GetStatus.
@@ -21,15 +21,15 @@ type DevicePowerGetStatusResponse struct {
 	// Information about the external power source (only available if external power source is supported)
 	External DevicePowerGetStatusResponseExternal `json:"external"`
 	// Id of the DevicePower component instance
-	Id int `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // DevicePowerGetStatusResponseBattery is the response of DevicePowerGetStatusResponseBattery.
 type DevicePowerGetStatusResponseBattery struct {
 	// Optional. Battery charge level in % (null if valid value could not be obtained)
-	Percent int `json:"percent"`
+	Percent float64 `json:"percent"`
 	// Optional. Battery voltage in Volts (null if valid value could not be obtained)
-	V int `json:"v"`
+	V float64 `json:"v"`
 }
 
 // DevicePowerGetStatusResponseExternal is the response of DevicePowerGetStatusResponseExternal.
@@ -50,7 +50,7 @@ func (r *DevicePowerGetStatusResponse) readResponse(reader *responseReader) erro
 func (c DevicePowerClient) GetStatus(args DevicePowerGetStatusRequest) (resp *DevicePowerGetStatusResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("DevicePower.GetStatus", args, &reader.Response); err != nil {
+	if err = c.call("DevicePower.GetStatus", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -74,17 +74,17 @@ func (r *DevicePowerGetStatusResponse) GetExternal() DevicePowerGetStatusRespons
 }
 
 // Getid returns the id value.
-func (r *DevicePowerGetStatusResponse) GetId() int {
+func (r *DevicePowerGetStatusResponse) GetId() float64 {
 	return r.Id
 }
 
 // GetPercent returns the percent value.
-func (r *DevicePowerGetStatusResponseBattery) GetPercent() int {
+func (r *DevicePowerGetStatusResponseBattery) GetPercent() float64 {
 	return r.Percent
 }
 
 // GetV returns the v value.
-func (r *DevicePowerGetStatusResponseBattery) GetV() int {
+func (r *DevicePowerGetStatusResponseBattery) GetV() float64 {
 	return r.V
 }
 

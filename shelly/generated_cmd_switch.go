@@ -11,7 +11,7 @@ type SwitchSetConfigRequest struct {
 	// Optional. Configuration that the method takes.
 	Config SwitchSetConfigRequestConfig `json:"config,omitempty"`
 	// Id of the Switch component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // Extra SwitchSetConfigRequestConfig is the request of SwitchSetConfigRequestConfig.
@@ -19,31 +19,31 @@ type SwitchSetConfigRequestConfig struct {
 	// True if the &#34;Automatic OFF&#34; function is enabled, false otherwise
 	AutoOff bool `json:"auto_off"`
 	// Seconds to pass until the component is switched back off
-	AutoOffDelay int `json:"auto_off_delay"`
+	AutoOffDelay float64 `json:"auto_off_delay"`
 	// True if the &#34;Automatic ON&#34; function is enabled, false otherwise
 	AutoOn bool `json:"auto_on"`
 	// Seconds to pass until the component is switched back on
-	AutoOnDelay int `json:"auto_on_delay"`
+	AutoOnDelay float64 `json:"auto_on_delay"`
 	// True if switch output state should be restored after over/undervoltage error is cleared, false otherwise (shown if applicable)
 	AutorecoverVoltageErrors bool `json:"autorecover_voltage_errors"`
 	// Optional. int, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)
-	CurrentLimit int `json:"current_limit"`
+	CurrentLimit float64 `json:"current_limit"`
 	// Id of the Switch component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// Mode of the associated input. Range of values: momentary, follow, flip, detached
 	InMode string `json:"in_mode"`
 	// Output state to set on power_on. Range of values: off, on, restore_last, match_input
 	InitialState string `json:"initial_state"`
 	// Id of the Input component which controls the Switch. Applicable only to Pro1 and Pro1PM devices. Valid values: 0, 1
-	InputId int `json:"input_id"`
+	InputId float64 `json:"input_id"`
 	// Optional. Name of the switch instance.
 	Name string `json:"name"`
 	// Optional. Limit (in Watts) over which overpower condition occurs (shown if applicable)
-	PowerLimit int `json:"power_limit"`
+	PowerLimit float64 `json:"power_limit"`
 	// Optional. Limit (in Volts) under which undervoltage condition occurs (shown if applicable)
-	UndervoltageLimit int `json:"undervoltage_limit"`
+	UndervoltageLimit float64 `json:"undervoltage_limit"`
 	// Optional. Limit (in Volts) over which overvoltage condition occurs (shown if applicable)
-	VoltageLimit int `json:"voltage_limit"`
+	VoltageLimit float64 `json:"voltage_limit"`
 }
 
 // SwitchSetConfigResponse is the response of SetConfig.
@@ -62,7 +62,7 @@ func (r *SwitchSetConfigResponse) readResponse(reader *responseReader) error {
 func (c SwitchClient) SetConfig(args SwitchSetConfigRequest) (resp *SwitchSetConfigResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Switch.SetConfig", args, &reader.Response); err != nil {
+	if err = c.call("Switch.SetConfig", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -78,7 +78,7 @@ func (c SwitchClient) SetConfig(args SwitchSetConfigRequest) (resp *SwitchSetCon
 // SwitchGetConfigRequest is the request of GetConfig.
 type SwitchGetConfigRequest struct {
 	// Id of the Switch component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // SwitchGetConfigResponse is the response of GetConfig.
@@ -86,31 +86,31 @@ type SwitchGetConfigResponse struct {
 	// True if the &#34;Automatic OFF&#34; function is enabled, false otherwise
 	AutoOff bool `json:"auto_off"`
 	// Seconds to pass until the component is switched back off
-	AutoOffDelay int `json:"auto_off_delay"`
+	AutoOffDelay float64 `json:"auto_off_delay"`
 	// True if the &#34;Automatic ON&#34; function is enabled, false otherwise
 	AutoOn bool `json:"auto_on"`
 	// Seconds to pass until the component is switched back on
-	AutoOnDelay int `json:"auto_on_delay"`
+	AutoOnDelay float64 `json:"auto_on_delay"`
 	// True if switch output state should be restored after over/undervoltage error is cleared, false otherwise (shown if applicable)
 	AutorecoverVoltageErrors bool `json:"autorecover_voltage_errors"`
 	// Optional. int, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)
-	CurrentLimit int `json:"current_limit"`
+	CurrentLimit float64 `json:"current_limit"`
 	// Id of the Switch component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// Mode of the associated input. Range of values: momentary, follow, flip, detached
 	InMode string `json:"in_mode"`
 	// Output state to set on power_on. Range of values: off, on, restore_last, match_input
 	InitialState string `json:"initial_state"`
 	// Id of the Input component which controls the Switch. Applicable only to Pro1 and Pro1PM devices. Valid values: 0, 1
-	InputId int `json:"input_id"`
+	InputId float64 `json:"input_id"`
 	// Optional. Name of the switch instance.
 	Name string `json:"name"`
 	// Optional. Limit (in Watts) over which overpower condition occurs (shown if applicable)
-	PowerLimit int `json:"power_limit"`
+	PowerLimit float64 `json:"power_limit"`
 	// Optional. Limit (in Volts) under which undervoltage condition occurs (shown if applicable)
-	UndervoltageLimit int `json:"undervoltage_limit"`
+	UndervoltageLimit float64 `json:"undervoltage_limit"`
 	// Optional. Limit (in Volts) over which overvoltage condition occurs (shown if applicable)
-	VoltageLimit int `json:"voltage_limit"`
+	VoltageLimit float64 `json:"voltage_limit"`
 }
 
 // readResponse reads the response into the given interface.
@@ -125,7 +125,7 @@ func (r *SwitchGetConfigResponse) readResponse(reader *responseReader) error {
 func (c SwitchClient) GetConfig(args SwitchGetConfigRequest) (resp *SwitchGetConfigResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Switch.GetConfig", args, &reader.Response); err != nil {
+	if err = c.call("Switch.GetConfig", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -139,7 +139,7 @@ func (r *SwitchGetConfigResponse) GetAutoOff() bool {
 }
 
 // Getauto_off_delay returns the auto_off_delay value.
-func (r *SwitchGetConfigResponse) GetAutoOffDelay() int {
+func (r *SwitchGetConfigResponse) GetAutoOffDelay() float64 {
 	return r.AutoOffDelay
 }
 
@@ -149,7 +149,7 @@ func (r *SwitchGetConfigResponse) GetAutoOn() bool {
 }
 
 // Getauto_on_delay returns the auto_on_delay value.
-func (r *SwitchGetConfigResponse) GetAutoOnDelay() int {
+func (r *SwitchGetConfigResponse) GetAutoOnDelay() float64 {
 	return r.AutoOnDelay
 }
 
@@ -159,12 +159,12 @@ func (r *SwitchGetConfigResponse) GetAutorecoverVoltageErrors() bool {
 }
 
 // Getcurrent_limit returns the current_limit value.
-func (r *SwitchGetConfigResponse) GetCurrentLimit() int {
+func (r *SwitchGetConfigResponse) GetCurrentLimit() float64 {
 	return r.CurrentLimit
 }
 
 // Getid returns the id value.
-func (r *SwitchGetConfigResponse) GetId() string {
+func (r *SwitchGetConfigResponse) GetId() float64 {
 	return r.Id
 }
 
@@ -179,7 +179,7 @@ func (r *SwitchGetConfigResponse) GetInitialState() string {
 }
 
 // Getinput_id returns the input_id value.
-func (r *SwitchGetConfigResponse) GetInputId() int {
+func (r *SwitchGetConfigResponse) GetInputId() float64 {
 	return r.InputId
 }
 
@@ -189,17 +189,17 @@ func (r *SwitchGetConfigResponse) GetName() string {
 }
 
 // Getpower_limit returns the power_limit value.
-func (r *SwitchGetConfigResponse) GetPowerLimit() int {
+func (r *SwitchGetConfigResponse) GetPowerLimit() float64 {
 	return r.PowerLimit
 }
 
 // Getundervoltage_limit returns the undervoltage_limit value.
-func (r *SwitchGetConfigResponse) GetUndervoltageLimit() int {
+func (r *SwitchGetConfigResponse) GetUndervoltageLimit() float64 {
 	return r.UndervoltageLimit
 }
 
 // Getvoltage_limit returns the voltage_limit value.
-func (r *SwitchGetConfigResponse) GetVoltageLimit() int {
+func (r *SwitchGetConfigResponse) GetVoltageLimit() float64 {
 	return r.VoltageLimit
 }
 
@@ -211,7 +211,7 @@ func (r *SwitchGetConfigResponse) GetVoltageLimit() int {
 // SwitchGetStatusRequest is the request of GetStatus.
 type SwitchGetStatusRequest struct {
 	// Id of the Switch component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // SwitchGetStatusResponse is the response of GetStatus.
@@ -219,27 +219,27 @@ type SwitchGetStatusResponse struct {
 	// Optional. Information about the active energy counter (shown if applicable)
 	Aenergy SwitchGetStatusResponseAenergy `json:"aenergy,omitempty"`
 	// Optional. Last measured instantaneous active power (in Watts) delivered to the attached load (shown if applicable)
-	Apower int `json:"apower"`
+	Apower float64 `json:"apower"`
 	// Optional. Last measured current in Amperes (shown if applicable)
-	Current int `json:"current"`
+	Current float64 `json:"current"`
 	// Optional. Error conditions occurred. May contain overtemp, overpower, overvoltage, undervoltage, (shown if at least one error is present)
 	Errors []string `json:"errors"`
 	// Id of the Switch component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// true if the output channel is currently on, false otherwise
 	Output bool `json:"output"`
 	// Optional. Last measured power factor (shown if applicable)
-	Pf int `json:"pf"`
+	Pf float64 `json:"pf"`
 	// Source of the last command, for example: init, WS_in, http, ...
 	Source string `json:"source"`
 	// Information about the temperature
 	Temperature SwitchGetStatusResponseTemperature `json:"temperature"`
 	// Optional. Duration of the timer in seconds (shown if the timer is triggered)
-	TimerDuration int `json:"timer_duration"`
+	TimerDuration float64 `json:"timer_duration"`
 	// Optional. Unix timestamp, start time of the timer (in UTC) (shown if the timer is triggered)
-	TimerStartedAt int `json:"timer_started_at"`
+	TimerStartedAt float64 `json:"timer_started_at"`
 	// Optional. Last measured voltage in Volts (shown if applicable)
-	Voltage int `json:"voltage"`
+	Voltage float64 `json:"voltage"`
 }
 
 // SwitchGetStatusResponseAenergy is the response of SwitchGetStatusResponseAenergy.
@@ -247,17 +247,17 @@ type SwitchGetStatusResponseAenergy struct {
 	// Energy consumption by minute (in Milliwatt-hours) for the last three minutes (the lower the index of the element in the array, the closer to the current moment the minute)
 	ByMinute []int `json:"by_minute"`
 	// Unix timestamp of the first second of the last minute (in UTC)
-	MinuteTs int `json:"minute_ts"`
+	MinuteTs float64 `json:"minute_ts"`
 	// Total energy consumed in Watt-hours
-	Total int `json:"total"`
+	Total float64 `json:"total"`
 }
 
 // SwitchGetStatusResponseTemperature is the response of SwitchGetStatusResponseTemperature.
 type SwitchGetStatusResponseTemperature struct {
 	// Temperature in Celsius (null if temperature is out of the measurement range)
-	TC int `json:"tc"`
+	TC float64 `json:"tc"`
 	// Temperature in Fahrenheit (null if temperature is out of the measurement range)
-	TF int `json:"tf"`
+	TF float64 `json:"tf"`
 }
 
 // readResponse reads the response into the given interface.
@@ -272,7 +272,7 @@ func (r *SwitchGetStatusResponse) readResponse(reader *responseReader) error {
 func (c SwitchClient) GetStatus(args SwitchGetStatusRequest) (resp *SwitchGetStatusResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Switch.GetStatus", args, &reader.Response); err != nil {
+	if err = c.call("Switch.GetStatus", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -286,12 +286,12 @@ func (r *SwitchGetStatusResponse) GetAenergy() SwitchGetStatusResponseAenergy {
 }
 
 // Getapower returns the apower value.
-func (r *SwitchGetStatusResponse) GetApower() int {
+func (r *SwitchGetStatusResponse) GetApower() float64 {
 	return r.Apower
 }
 
 // Getcurrent returns the current value.
-func (r *SwitchGetStatusResponse) GetCurrent() int {
+func (r *SwitchGetStatusResponse) GetCurrent() float64 {
 	return r.Current
 }
 
@@ -301,7 +301,7 @@ func (r *SwitchGetStatusResponse) GetErrors() []string {
 }
 
 // Getid returns the id value.
-func (r *SwitchGetStatusResponse) GetId() string {
+func (r *SwitchGetStatusResponse) GetId() float64 {
 	return r.Id
 }
 
@@ -311,7 +311,7 @@ func (r *SwitchGetStatusResponse) GetOutput() bool {
 }
 
 // Getpf returns the pf value.
-func (r *SwitchGetStatusResponse) GetPf() int {
+func (r *SwitchGetStatusResponse) GetPf() float64 {
 	return r.Pf
 }
 
@@ -326,17 +326,17 @@ func (r *SwitchGetStatusResponse) GetTemperature() SwitchGetStatusResponseTemper
 }
 
 // Gettimer_duration returns the timer_duration value.
-func (r *SwitchGetStatusResponse) GetTimerDuration() int {
+func (r *SwitchGetStatusResponse) GetTimerDuration() float64 {
 	return r.TimerDuration
 }
 
 // Gettimer_started_at returns the timer_started_at value.
-func (r *SwitchGetStatusResponse) GetTimerStartedAt() int {
+func (r *SwitchGetStatusResponse) GetTimerStartedAt() float64 {
 	return r.TimerStartedAt
 }
 
 // Getvoltage returns the voltage value.
-func (r *SwitchGetStatusResponse) GetVoltage() int {
+func (r *SwitchGetStatusResponse) GetVoltage() float64 {
 	return r.Voltage
 }
 
@@ -346,22 +346,22 @@ func (r *SwitchGetStatusResponseAenergy) GetByMinute() []int {
 }
 
 // GetMinuteTs returns the minute_ts value.
-func (r *SwitchGetStatusResponseAenergy) GetMinuteTs() int {
+func (r *SwitchGetStatusResponseAenergy) GetMinuteTs() float64 {
 	return r.MinuteTs
 }
 
 // GetTotal returns the total value.
-func (r *SwitchGetStatusResponseAenergy) GetTotal() int {
+func (r *SwitchGetStatusResponseAenergy) GetTotal() float64 {
 	return r.Total
 }
 
 // GetTC returns the tC value.
-func (r *SwitchGetStatusResponseTemperature) GetTC() int {
+func (r *SwitchGetStatusResponseTemperature) GetTC() float64 {
 	return r.TC
 }
 
 // GetTF returns the tF value.
-func (r *SwitchGetStatusResponseTemperature) GetTF() int {
+func (r *SwitchGetStatusResponseTemperature) GetTF() float64 {
 	return r.TF
 }
 
@@ -373,7 +373,7 @@ func (r *SwitchGetStatusResponseTemperature) GetTF() int {
 // SwitchToggleRequest is the request of Toggle.
 type SwitchToggleRequest struct {
 	// Id of the Switch component instance.
-	Id int `json:"id"`
+	Id float64 `json:"id"`
 }
 
 // SwitchToggleResponse is the response of Toggle.
@@ -394,7 +394,7 @@ func (r *SwitchToggleResponse) readResponse(reader *responseReader) error {
 func (c SwitchClient) Toggle(args SwitchToggleRequest) (resp *SwitchToggleResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Switch.Toggle", args, &reader.Response); err != nil {
+	if err = c.call("Switch.Toggle", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -415,11 +415,11 @@ func (r *SwitchToggleResponse) GetWasOn() bool {
 // SwitchSetRequest is the request of Set.
 type SwitchSetRequest struct {
 	// Id of the Switch component instance.
-	Id string `json:"id"`
+	Id float64 `json:"id"`
 	// True for switch on, false otherwise.
 	On bool `json:"on"`
 	// Optional. int, seconds to wait before toggling the switch back to its previous state.
-	ToggleAfter int `json:"toggle_after"`
+	ToggleAfter float64 `json:"toggle_after"`
 }
 
 // SwitchSetResponse is the response of Set.
@@ -440,7 +440,7 @@ func (r *SwitchSetResponse) readResponse(reader *responseReader) error {
 func (c SwitchClient) Set(args SwitchSetRequest) (resp *SwitchSetResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("Switch.Set", args, &reader.Response); err != nil {
+	if err = c.call("Switch.Set", args, &reader.Response); err != nil {
 		return
 	}
 

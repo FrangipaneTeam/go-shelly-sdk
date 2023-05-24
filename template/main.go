@@ -13,11 +13,21 @@ import (
 	"os"
 	"strings"
 
+	"github.com/FrangipaneTeam/go-shelly-sdk/internal/tools"
 	"github.com/Masterminds/sprig/v3"
 	"github.com/iancoleman/strcase"
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 )
+
+type devicesFile struct {
+	Devices map[string]device `yaml:"devices"`
+}
+
+type device struct {
+	Name    string              `yaml:"name"`
+	Methods map[string][]string `yaml:"methods"`
+}
 
 type configFile struct {
 	Commands []*templateCommandInfos `yaml:"commands"`
@@ -60,19 +70,37 @@ var templateCommand string
 //go:embed clients.go.tmpl
 var templateClient string
 
+//go:embed devices.go.tmpl
+var templateDevices string
+
 //go:embed cmd.yaml
 var commandsYaml string
+
+//go:embed devices.yaml
+var devicesYaml string
 
 func main() {
 	fmt.Println("generating commands files...")
 
-	c := &configFile{}
+	var (
+		c        = &configFile{}
+		d        = &devicesFile{}
+		commands = make(map[string][]*templateCommandInfos)
+		clients  = []string{}
+		err      error
+	)
 
-	err := yaml.Unmarshal([]byte(commandsYaml), c)
-	if err != nil {
+	// Parse yaml commands
+	if err = yaml.Unmarshal([]byte(commandsYaml), c); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
+	// Parse yaml devices
+	if err = yaml.Unmarshal([]byte(devicesYaml), d); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Custom functions for template
 	funcMap := template.FuncMap{
 		"ToUpper":      strings.ToUpper,
 		"ToLower":      strings.ToLower,
@@ -80,11 +108,7 @@ func main() {
 		"ToLowerCamel": strcase.ToLowerCamel,
 	}
 
-	// fmt.Printf("%+v\n", c)
-
-	commands := make(map[string][]*templateCommandInfos)
-	clients := []string{}
-
+	// For each command construct a map with the category as key and the command as value
 	for _, v := range c.Commands {
 
 		if !slices.Contains(clients, v.Category) {
@@ -125,46 +149,9 @@ func main() {
 		}
 
 		commands[v.Category] = append(commands[v.Category], v)
-
 	}
 
-	// pretty.Print(commands)
-
-	// for _, v := range c.Commands {
-
-	// 	if !slices.Contains(clients, v.Category) {
-	// 		clients = append(clients, v.Category)
-	// 	}
-
-	// 	for k, v := range v.Request {
-	// 		if strings.HasSuffix(v.Type, "object") {
-	// 			extraStructsRequest[k] = v
-	// 			for k2, v2 := range v.Items {
-	// 				if strings.HasSuffix(v2.Type, "object") {
-	// 					extraStructsRequest[strcase.ToCamel(fmt.Sprintf("%s_%s", k, k2))] = v2
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-
-	// 	for k, v := range v.Response {
-	// 		if strings.HasSuffix(v.Type, "object") {
-	// 			extraStructsResponse[k] = v
-	// 			for k2, v2 := range v.Items {
-	// 				if strings.HasSuffix(v2.Type, "object") {
-	// 					extraStructsResponse[strcase.ToCamel(fmt.Sprintf("%s_%s", k, k2))] = v2
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-
-	// 	v.ExtraStructsRequest = extraStructsRequest
-	// 	v.ExtraStructsResponse = extraStructsResponse
-
-	// 	commands[v.Category] = append(commands[v.Category], v)
-
-	// }
-
+	// Create template for clients
 	tmpl, err := template.New("template").Funcs(sprig.FuncMap()).Funcs(funcMap).Parse(templateClient)
 	if err != nil {
 		fmt.Printf("error from template parse : %v\n", err)
@@ -192,6 +179,9 @@ func main() {
 		fmt.Printf("write to file error : %v\n", errWrite)
 	}
 
+	// End template for clients
+
+	// Create template for commands
 	for k, v := range commands {
 
 		tmpl, err := template.New("template").Funcs(funcMap).Parse(templateCommand)
@@ -202,9 +192,7 @@ func main() {
 
 		var tpl bytes.Buffer
 
-		errExec := tmpl.Execute(&tpl, v)
-
-		if errExec != nil {
+		if err := tmpl.Execute(&tpl, v); err != nil {
 			fmt.Printf("error from template execute : %v\n", errExec)
 			os.Exit(1)
 		}
@@ -221,9 +209,52 @@ func main() {
 			fmt.Printf("write to file error : %v\n", errWrite)
 		}
 	}
+	// End template for commands
 
-	return
+	// Create template for devices
+	for k, v := range d.Devices {
 
+		for i, cmds := range v.Methods {
+			xx := []string{}
+			if !tools.MapItemExists(commands, i) {
+				// Remove method if not in commands
+				delete(v.Methods, i)
+				continue
+			}
+			for _, c := range commands[i] {
+				if slices.Contains(cmds, c.Name) {
+					xx = append(xx, c.Name)
+				}
+			}
+
+			v.Methods[i] = xx
+		}
+
+		tmpl, err = template.New("template").Funcs(funcMap).Parse(templateDevices)
+		if err != nil {
+			fmt.Printf("error from template devices parse : %v\n", err)
+			os.Exit(1)
+		}
+
+		var tpl bytes.Buffer
+
+		if err := tmpl.Execute(&tpl, v); err != nil {
+			fmt.Printf("error from template devices execute : %v\n", errExec)
+			os.Exit(1)
+		}
+
+		// format the code
+		formattedContent, errFormat := format.Source(tpl.Bytes())
+		if errFormat != nil {
+			fmt.Printf("error from format for component %s : %v\n", k, errFormat)
+			os.Exit(1)
+		}
+
+		if err := os.WriteFile("shelly/generated_device_"+strings.ToLower(k)+".go", formattedContent, 0o644); err != nil {
+			fmt.Printf("write to file error : %v\n", err)
+		}
+	}
+	// End template for devices
 }
 
 func recursiveRequestItems(base string, items map[string]*templateCommandInfosArgsRequest) map[string]*templateCommandInfosArgsRequest {

@@ -1,6 +1,8 @@
 package shelly
 
-import "github.com/FrangipaneTeam/go-shelly-sdk/internal/rpc"
+import (
+	"github.com/FrangipaneTeam/go-shelly-sdk/internal/rpc"
+)
 
 type Client struct {
 	rpc *rpc.RPC
@@ -16,19 +18,30 @@ func New(ip string) (*Client, error) {
 	return &Client{rpc: _rpc}, nil
 }
 
-// Close closes the client.
-func (c *Client) Close() error {
-	return c.rpc.Close()
-}
+/*
+   > APIClient
+*/
 
-// * CLOUD
-
-// Cloud is the client for the Cloud.
-type CloudClient struct {
+type APIClient struct {
 	client *Client
 }
 
-// Cloud returns a client for the Cloud.
-func (c *Client) Cloud() *CloudClient {
-	return &CloudClient{client: c}
+// API returns a client for the API.
+func (c *Client) API() *APIClient {
+	return &APIClient{client: c}
+}
+
+// call calls the given method with the given args and reply.
+func (c *APIClient) call(method string, args, reply interface{}) error {
+	// pretty.Print(args)
+	return c.client.rpc.Call(method, args, reply)
+}
+
+type DevicesClient struct {
+	client *Client
+}
+
+// Devices returns a client for the Devices.
+func (c *Client) Devices() *DevicesClient {
+	return &DevicesClient{client: c}
 }

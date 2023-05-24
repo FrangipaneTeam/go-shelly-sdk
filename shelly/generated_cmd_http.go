@@ -11,7 +11,7 @@ type HTTPGETRequest struct {
 	// Optional. Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation.
 	SslCa string `json:"ssl_ca"`
 	// Optional. The timeout in seconds for the request.
-	Timeout int `json:"timeout"`
+	Timeout float64 `json:"timeout"`
 	// The URL to be requested
 	Url string `json:"url"`
 }
@@ -23,7 +23,7 @@ type HTTPGETResponse struct {
 	// base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
 	BodyB64 string `json:"body_b64"`
 	// Code of the HTTP response
-	Code int `json:"code"`
+	Code float64 `json:"code"`
 	// List of HTTP headers sent by the server
 	Headers interface{} `json:"headers"`
 	// Msssage of the HTTP response
@@ -42,7 +42,7 @@ func (r *HTTPGETResponse) readResponse(reader *responseReader) error {
 func (c HTTPClient) GET(args HTTPGETRequest) (resp *HTTPGETResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("HTTP.GET", args, &reader.Response); err != nil {
+	if err = c.call("HTTP.GET", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -61,7 +61,7 @@ func (r *HTTPGETResponse) GetBodyB64() string {
 }
 
 // Getcode returns the code value.
-func (r *HTTPGETResponse) GetCode() int {
+func (r *HTTPGETResponse) GetCode() float64 {
 	return r.Code
 }
 
@@ -91,7 +91,7 @@ type HTTPPOSTRequest struct {
 	// Optional. Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation.
 	SslCa string `json:"ssl_ca"`
 	// Optional. The timeout in seconds for the request.
-	Timeout int `json:"timeout"`
+	Timeout float64 `json:"timeout"`
 	// The URL to be requested
 	Url string `json:"url"`
 }
@@ -103,7 +103,7 @@ type HTTPPOSTResponse struct {
 	// base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
 	BodyB64 string `json:"body_b64"`
 	// Code of the HTTP response
-	Code int `json:"code"`
+	Code float64 `json:"code"`
 	// List of HTTP headers sent by the server
 	Headers interface{} `json:"headers"`
 	// Msssage of the HTTP response
@@ -122,7 +122,7 @@ func (r *HTTPPOSTResponse) readResponse(reader *responseReader) error {
 func (c HTTPClient) POST(args HTTPPOSTRequest) (resp *HTTPPOSTResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("HTTP.POST", args, &reader.Response); err != nil {
+	if err = c.call("HTTP.POST", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -141,7 +141,7 @@ func (r *HTTPPOSTResponse) GetBodyB64() string {
 }
 
 // Getcode returns the code value.
-func (r *HTTPPOSTResponse) GetCode() int {
+func (r *HTTPPOSTResponse) GetCode() float64 {
 	return r.Code
 }
 
@@ -173,7 +173,7 @@ type HTTPRequestRequest struct {
 	// Optional. Type of the TCP socket. One of: null, user_ca.pem or *. If null, default value, the built-in ca.pem TLS CA is used for HTTPS requests. If user_ca.pem, the user CA will be used. If *, disabled certificate validation.
 	SslCa string `json:"ssl_ca"`
 	// Optional. The timeout in seconds for the request.
-	Timeout int `json:"timeout"`
+	Timeout float64 `json:"timeout"`
 	// The URL to be requested
 	Url string `json:"url"`
 }
@@ -185,7 +185,7 @@ type HTTPRequestResponse struct {
 	// base64 encoded HTTP response body, if body is binary data. Maximum accepted length is 16KB (16384 bytes)
 	BodyB64 string `json:"body_b64"`
 	// Code of the HTTP response
-	Code int `json:"code"`
+	Code float64 `json:"code"`
 	// List of HTTP headers sent by the server
 	Headers interface{} `json:"headers"`
 	// Msssage of the HTTP response
@@ -204,7 +204,7 @@ func (r *HTTPRequestResponse) readResponse(reader *responseReader) error {
 func (c HTTPClient) Request(args HTTPRequestRequest) (resp *HTTPRequestResponse, err error) {
 	reader := NewResponseReader()
 
-	if err = c.client.rpc.Call("HTTP.Request", args, &reader.Response); err != nil {
+	if err = c.call("HTTP.Request", args, &reader.Response); err != nil {
 		return
 	}
 
@@ -223,7 +223,7 @@ func (r *HTTPRequestResponse) GetBodyB64() string {
 }
 
 // Getcode returns the code value.
-func (r *HTTPRequestResponse) GetCode() int {
+func (r *HTTPRequestResponse) GetCode() float64 {
 	return r.Code
 }
 

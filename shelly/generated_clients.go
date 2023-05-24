@@ -7,12 +7,17 @@ package shelly
 
 // Shelly is the client for the Shelly.
 type ShellyClient struct {
-	client *Client
+	client *APIClient
 }
 
 // Shelly returns a client for the Shelly.
-func (c *Client) Shelly() *ShellyClient {
+func (c *APIClient) Shelly() *ShellyClient {
 	return &ShellyClient{client: c}
+}
+
+// call calls the given method with the given args and reply.
+func (c *ShellyClient) call(method string, args, reply interface{}) error {
+	return c.client.client.rpc.Call(method, args, reply)
 }
 
 /*
@@ -21,12 +26,17 @@ func (c *Client) Shelly() *ShellyClient {
 
 // Switch is the client for the Switch.
 type SwitchClient struct {
-	client *Client
+	client *APIClient
 }
 
 // Switch returns a client for the Switch.
-func (c *Client) Switch() *SwitchClient {
+func (c *APIClient) Switch() *SwitchClient {
 	return &SwitchClient{client: c}
+}
+
+// call calls the given method with the given args and reply.
+func (c *SwitchClient) call(method string, args, reply interface{}) error {
+	return c.client.client.rpc.Call(method, args, reply)
 }
 
 /*
@@ -35,12 +45,17 @@ func (c *Client) Switch() *SwitchClient {
 
 // Light is the client for the Light.
 type LightClient struct {
-	client *Client
+	client *APIClient
 }
 
 // Light returns a client for the Light.
-func (c *Client) Light() *LightClient {
+func (c *APIClient) Light() *LightClient {
 	return &LightClient{client: c}
+}
+
+// call calls the given method with the given args and reply.
+func (c *LightClient) call(method string, args, reply interface{}) error {
+	return c.client.client.rpc.Call(method, args, reply)
 }
 
 /*
@@ -49,12 +64,17 @@ func (c *Client) Light() *LightClient {
 
 // Cover is the client for the Cover.
 type CoverClient struct {
-	client *Client
+	client *APIClient
 }
 
 // Cover returns a client for the Cover.
-func (c *Client) Cover() *CoverClient {
+func (c *APIClient) Cover() *CoverClient {
 	return &CoverClient{client: c}
+}
+
+// call calls the given method with the given args and reply.
+func (c *CoverClient) call(method string, args, reply interface{}) error {
+	return c.client.client.rpc.Call(method, args, reply)
 }
 
 /*
@@ -63,12 +83,17 @@ func (c *Client) Cover() *CoverClient {
 
 // DevicePower is the client for the DevicePower.
 type DevicePowerClient struct {
-	client *Client
+	client *APIClient
 }
 
 // DevicePower returns a client for the DevicePower.
-func (c *Client) DevicePower() *DevicePowerClient {
+func (c *APIClient) DevicePower() *DevicePowerClient {
 	return &DevicePowerClient{client: c}
+}
+
+// call calls the given method with the given args and reply.
+func (c *DevicePowerClient) call(method string, args, reply interface{}) error {
+	return c.client.client.rpc.Call(method, args, reply)
 }
 
 /*
@@ -77,12 +102,17 @@ func (c *Client) DevicePower() *DevicePowerClient {
 
 // Schedule is the client for the Schedule.
 type ScheduleClient struct {
-	client *Client
+	client *APIClient
 }
 
 // Schedule returns a client for the Schedule.
-func (c *Client) Schedule() *ScheduleClient {
+func (c *APIClient) Schedule() *ScheduleClient {
 	return &ScheduleClient{client: c}
+}
+
+// call calls the given method with the given args and reply.
+func (c *ScheduleClient) call(method string, args, reply interface{}) error {
+	return c.client.client.rpc.Call(method, args, reply)
 }
 
 /*
@@ -91,10 +121,15 @@ func (c *Client) Schedule() *ScheduleClient {
 
 // HTTP is the client for the HTTP.
 type HTTPClient struct {
-	client *Client
+	client *APIClient
 }
 
 // HTTP returns a client for the HTTP.
-func (c *Client) HTTP() *HTTPClient {
+func (c *APIClient) HTTP() *HTTPClient {
 	return &HTTPClient{client: c}
+}
+
+// call calls the given method with the given args and reply.
+func (c *HTTPClient) call(method string, args, reply interface{}) error {
+	return c.client.client.rpc.Call(method, args, reply)
 }

@@ -1,0 +1,99 @@
+devices:
+    Pro4PM:
+        name: Pro4PM
+        methods:
+            BLE:
+                - SetConfig
+                - GetConfig
+                - GetStatus
+            Cloud:
+                - SetConfig
+                - GetConfig
+                - GetStatus
+            Eth:
+                - SetConfig
+                - GetConfig
+                - GetStatus
+            HTTP:
+                - Request
+                - POST
+                - GET
+            Input:
+                - SetConfig
+                - GetConfig
+                - GetStatus
+            KVS:
+                - Delete
+                - Set
+                - GetMany
+                - Get
+                - List
+            Mqtt:
+                - SetConfig
+                - GetConfig
+                - GetStatus
+            Schedule:
+                - List
+                - DeleteAll
+                - Delete
+                - Update
+                - Create
+            Script:
+                - Stop
+                - Start
+                - Eval
+                - GetCode
+                - PutCode
+                - SetConfig
+                - GetConfig
+                - GetStatus
+                - List
+                - Delete
+                - Create
+            Shelly:
+                - ListMethods
+                - PutTLSClientKey
+                - PutTLSClientCert
+                - PutUserCA
+                - Reboot
+                - SetAuth
+                - Update
+                - CheckForUpdate
+                - DetectLocation
+                - ListTimezones
+                - GetStatus
+                - FactoryReset
+                - ResetWiFiConfig
+                - GetConfig
+                - GetDeviceInfo
+            Switch:
+                - SetConfig
+                - GetConfig
+                - GetStatus
+                - Toggle
+                - Set
+            Sys:
+                - SetConfig
+                - GetConfig
+                - GetStatus
+            UI:
+                - SetConfig
+                - GetConfig
+                - GetStatus
+            WS:
+                - SetConfig
+                - GetConfig
+                - GetStatus
+            Webhook:
+                - ListSupported
+                - List
+                - DeleteAll
+                - Delete
+                - Update
+                - Create
+            Wifi:
+                - Scan
+                - ListAPClients
+                - SetConfig
+                - GetConfig
+                - GetStatus
