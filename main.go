@@ -9,3 +9,4 @@ import (
 )
 
 //go:generate go run template/main.go
+//go:generate go run template_v1/main.go

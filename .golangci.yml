@@ -119,7 +119,7 @@ linters-settings:
     # Choose whether to use the extra rules.
     # Default: false
     extra-rules: true
-  
+
   revive:
     revive:
     ignore-generated-header: true
